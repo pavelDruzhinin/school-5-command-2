@@ -32,7 +32,7 @@ namespace BackEnd
             services.AddDbContext<ChatsConstructorContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<User, IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<ChatsConstructorContext>();
 
             services.AddControllers();

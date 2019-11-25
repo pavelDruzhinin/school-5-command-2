@@ -9,11 +9,16 @@ namespace ChatsConstructor.WebApi.Models.Domains
     /// <summary>
     /// Представляет собой пользователя, который хранится в БД
     /// </summary>
-    public class User : IdentityUser
+    public class User : IdentityUser<Guid>
     {
         /// <summary>
         /// Созданные чаты пользователя
         /// </summary>
         public List<Chat> Chats { get; set; }
+
+        /// <summary>
+        /// Сессии которые есть у пользователя
+        /// </summary>
+        public List<ChatSession> Sessions { get; set; }
     }
 }

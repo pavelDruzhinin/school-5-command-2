@@ -1,4 +1,5 @@
 ﻿using ChatsConstructor.WebApi.Models.Domains;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace ChatsConstructor.WebApi.Models
 {
-    public class ChatsConstructorContext : IdentityDbContext<User>
-    {
+    public class ChatsConstructorContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+    { 
         public ChatsConstructorContext(DbContextOptions<ChatsConstructorContext> options) : base(options)
         {
         }

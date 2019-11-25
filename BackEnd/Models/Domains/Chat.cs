@@ -25,7 +25,7 @@ namespace ChatsConstructor.WebApi.Models.Domains
         /// <summary>
         /// Идентификатор создателя чата
         /// </summary>
-        public long UserId { get; set; }
+        public Guid UserId { get; set; }
         public User User { get; set; }
 
         /// <summary>

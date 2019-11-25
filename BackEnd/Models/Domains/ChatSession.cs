@@ -19,7 +19,7 @@ namespace ChatsConstructor.WebApi.Models.Domains
         /// <summary>
         /// Идентификатор пользователя (если есть)
         /// </summary>
-        public long? UserId { get; set; }
+        public Guid? UserId { get; set; }
         public User User { get; set; }
 
         /// <summary>
