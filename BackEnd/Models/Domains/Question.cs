@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChatsConstructor.WebApi.Models.Domains.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,6 +36,11 @@ namespace ChatsConstructor.WebApi.Models.Domains
         /// Дата удаления вопроса
         /// </summary>
         public DateTime? DeleteUtcDateTime { get; set; }
+
+        /// <summary>
+        /// Тип вопроса
+        /// </summary>
+        public QuestionType QuestionType { get; set; }
 
         /// <summary>
         /// Ответы на этот вопрос
