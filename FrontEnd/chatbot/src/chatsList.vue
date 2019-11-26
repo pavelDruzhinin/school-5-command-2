@@ -4,11 +4,11 @@
       <h1>Список чатов</h1>
       <ul>
 
-        <li v-for="(chat, index) in chats">
+        <li v-for="(chat, index) in chats" v-bind:key="chat.id">
           <div class="dflex  justifystart">
             <div><h2>{{chat.name}}</h2></div>
             <a href="">ред.</a>
-            <a href="">удал.</a>
+            <a @click="$delete(chats, index)">удал.</a>
           </div>
         </li>
 
@@ -81,10 +81,10 @@ export default {
   data() {
     return {
       chats: [
-        {name: 'Чат номер 1'},
-        {name: 'Чат номер 2'}
+        {id:0, name: 'Чат номер 1'},
+        {id:1, name: 'Чат номер 2'}
       ]
     }
   }
-}
+  }
 </script>
