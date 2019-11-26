@@ -1,0 +1,66 @@
+* {
+    padding:0;
+    margin:0;
+}
+
+.dflex {
+    display:flex;
+  }
+  
+.aligncenter {
+  align-items: center;
+}
+
+.justifycenter {
+  justify-content: center;
+}
+
+.button {
+
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 50px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+  
+
+body {
+    width:100vw;
+}
+#main {
+
+    padding-left:10%;
+    padding-right:10%;
+    display:grid;
+    grid-template-areas: 
+    "chatsList button"
+    "respondents respondents";
+    grid-template-columns: 0.9fr 0.1fr;
+    grid-template-rows: 1fr 1fr;
+
+    #chatsList {
+    border: 1px solid rgb(241, 235, 235);
+    border-radius: 5px;
+    grid-area: chatsList;
+    }
+
+    #respondents {
+
+      grid-area: respondents;
+      border: 1px solid rgb(241, 235, 235);
+      border-radius: 5px;
+      margin-top:10px;
+
+    }
+
+    #plusButton {
+
+      grid-area: button;
+    }
+}
