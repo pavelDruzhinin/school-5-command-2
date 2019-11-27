@@ -4,29 +4,37 @@
 }
 
 .dflex {
-    display:flex;
-  }
-  
+  display:flex;
+}
+
 .aligncenter {
   align-items: center;
+}
+
+.justifystart {
+  justify-content: flex-start;
 }
 
 .justifycenter {
   justify-content: center;
 }
 
+.justibetween {
+  justify-content: space-between;
+}
+
 .button {
 
   border: none;
   color: white;
-  padding: 15px 32px;
+
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 50px;
-  margin: 4px 2px;
+  margin: 4px 4px;
   cursor: pointer;
   border-radius: 5px;
+  border: 1px solid #CDCDCD;
 }
   
 

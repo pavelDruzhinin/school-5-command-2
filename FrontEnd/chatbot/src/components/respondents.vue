@@ -1,6 +1,6 @@
 <template>
     <div id="plusButton">
-        <div class="dflex justifystart">
+        <div class="dflex justibetween">
             <h1>Список респондентов</h1>
             <button class="button" id="userAddButton">
                 +
@@ -8,27 +8,27 @@
         </div>
         
         <ul>
-            <li v-for="(respondent, index) in respondents">
-                <div class="dflex  justifystart">
-                    <div><h2>{{respondent.name}}</h2></div>
+            <li v-for="(respondent, index) in respondents" v-bind:key="respondents.key">
+                <div class="dflex  justibetween">
+                    <h2>{{respondent.name}}</h2>
+                    <div class="dflex justifystart">
+
+                      <button class="button seeUser">
+                        Посмотреть результаты
+                      </button>
+
+                      <button class="button seeUser">
+                        Открыть профиль
+                      </button>
+                    </div>
                 </div>
+                <hr>
             </li>
         </ul>
     </div>
 </template>
 
 <style lang="scss" scoped>
-.dflex {
-  display:flex;
-}
-
-.aligncenter {
-  align-items: center;
-}
-
-.justifystart {
-  justify-content: flex-start;
-}
 
 h1 {
 
@@ -38,8 +38,9 @@ h1 {
 #userAddButton {
 
     font-size: 30px;
-    background-color: blue;
-      padding: 0 15px;
+    background-color: rgb(96, 179, 96);
+    padding: 0 15px;
+
 
 }
 li {
@@ -47,6 +48,14 @@ li {
   list-style:none;  
   margin-left:30px;
   margin-top:15px;
+
+    .seeUser {
+      background-color: white;
+      color:black;
+      font-size:10px;
+      padding: 5px 11px;
+
+    }
 
     a {
     text-decoration: none;
@@ -58,6 +67,11 @@ li {
     a:hover {
     text-decoration: none;
     color: #CDCDCD;
+    }
+
+    hr {
+    color: #CDCDCD;
+    opacity: 0.5;
     }
 
 }
@@ -73,9 +87,9 @@ export default {
  data() {
     return {
         respondents: [
-            {name: 'user1'},
-            {name: 'user2'},
-            {name: 'user3'}
+            {id: 0, name: 'user1'},
+            {id: 1, name: 'user2'},
+            {id: 2, name: 'user3'}
             ]}
   }
 }

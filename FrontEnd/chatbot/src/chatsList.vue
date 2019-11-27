@@ -5,11 +5,15 @@
       <ul>
 
         <li v-for="(chat, index) in chats" v-bind:key="chat.id">
+          <div class="dflex justibetween">
+          <div><h2>{{chat.name}}</h2></div>
           <div class="dflex  justifystart">
-            <div><h2>{{chat.name}}</h2></div>
-            <a href="">ред.</a>
-            <a @click="$delete(chats, index)">удал.</a>
+            
+            <button class="button editChat">Редактировать</button>
+            <button class="button deleteChat" @click="removeId(chat.id)">X</button>
           </div>
+          </div>
+          <hr>
         </li>
 
       </ul>
@@ -25,21 +29,7 @@
 </template>
 
 <style lang="scss" scoped>
-.dflex {
-  display:flex;
-}
 
-.aligncenter {
-  align-items: center;
-}
-
-.justifystart {
-  justify-content: flex-start;
-}
-
-.justifycenter {
-  justify-content: center;
-}
 
 h1 {
 
@@ -63,6 +53,27 @@ li {
     color: #CDCDCD;
     }
 
+      .editChat {
+      background-color: white;
+      color:black;
+      font-size:10px;
+      padding: 5px 11px;
+
+    }
+
+          .deleteChat {
+      background-color: rgb(236, 96, 96);
+      color:black;
+      font-size:10px;
+      padding: 5px 11px;
+
+    }
+
+    hr {
+      color: #CDCDCD;
+      opacity: 0.5;
+    }
+
 }
 
 
@@ -84,6 +95,12 @@ export default {
         {id:0, name: 'Чат номер 1'},
         {id:1, name: 'Чат номер 2'}
       ]
+    }
+  },
+  methods: {
+    removeId: function(id) {
+      let chats = this.chats;
+      this.chats = chats.filter((chat) => chat.id != id);
     }
   }
   }

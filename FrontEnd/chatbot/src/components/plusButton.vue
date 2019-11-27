@@ -16,7 +16,9 @@
 }
 
 #addButton {
-    background-color: blue;
+    background-color: rgb(89, 89, 231);
+    font-size: 50px;
+      padding: 15px 32px;
 }
 
 </style>
