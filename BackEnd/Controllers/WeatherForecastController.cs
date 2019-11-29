@@ -40,6 +40,8 @@ namespace BackEnd.Controllers
             .ToArray();
         }
 
+        /* Не Identity */
+        /*
         [HttpGet]
         public IActionResult Register(User user)
         {
@@ -59,5 +61,6 @@ namespace BackEnd.Controllers
 
             return ViewComponent()
         }
+        */
     }
 }
