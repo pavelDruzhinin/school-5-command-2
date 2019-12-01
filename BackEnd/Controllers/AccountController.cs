@@ -19,6 +19,19 @@ namespace Application.Web.Controllers
             _signInManager = signInManager;
         }
 
+        //remarks описание метода
+        //GET /GetUser
+        //  {
+        //    "id":1
+        //}
+
+        /// <summary>
+        /// Регистрация нового пользователя
+        /// </summary>
+        /// <param name="model">Имя и почта пользователя </param>
+        /// <remarks></remarks>        
+        /// <response code='200'>Пользователь успешно зарегистрирован</response>
+        /// <response code='401'>Решистрация отклонена(?)</response>
         [HttpPost]
         [Route("Register")]
         public async Task<string> Register (RegisterViewModel model)
@@ -45,6 +58,12 @@ namespace Application.Web.Controllers
             }
             return "{ error: 1, msg: \"Invalid Model\" }";
         }
+        /// <summary>
+        /// Авторизация пользователя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <response code='200'> Пользователь успешно авторизован</response>
+        /// <response code='401'> Пользователь не прошел аутентификацию</response>
 
         [HttpPost]
         [Route("Login")]
@@ -65,7 +84,10 @@ namespace Application.Web.Controllers
             }
             return "{ error: 1,  msg: \"Invalid Model\" }";
         }
-
+        /// <summary>
+        /// Выход пользователя из учетной записи
+        /// </summary>
+        ///<response code='200'></response>
         [HttpPost]
         [Route("Logout")]
         public async Task<string> Logout()
