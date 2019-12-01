@@ -26,7 +26,10 @@ namespace BackEnd.Controllers
             _logger = logger;
             db = context;
         }
-
+        /// <summary>
+        /// Получение списка
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
