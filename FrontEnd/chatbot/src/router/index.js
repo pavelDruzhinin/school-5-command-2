@@ -33,9 +33,17 @@ const routes = [
   },
   {
     path: "/chatsList",
-    name: "chatslist",
+    name: "chatsList",
     components: {
       default: () => import("../chatsList.vue"),
+      navbar: () => import("../components/Navbar.vue")
+    }
+  },
+  {
+    path: "/myChatList",
+    name: "myChatList",
+    components: {
+      default: () => import("../myChatList.vue"),
       navbar: () => import("../components/Navbar.vue")
     }
   },

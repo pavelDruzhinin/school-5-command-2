@@ -52,8 +52,9 @@ body {
     grid-template-columns: 0.9fr 0.1fr;
     grid-template-rows: 1fr 1fr;
 
-    #chatsList {
-    border: 1px solid rgb(241, 235, 235);
+    #chatsList {      
+    /*border: 1px solid rgb(241, 235, 235);*/
+    border: 1px solid #2c9bad;
     border-radius: 5px;
     grid-area: chatsList;
     }
@@ -61,7 +62,8 @@ body {
     #respondents {
 
       grid-area: respondents;
-      border: 1px solid rgb(241, 235, 235);
+      /*border: 1px solid rgb(241, 235, 235);*/
+      border: 1px solid #2c9bad;
       border-radius: 5px;
       margin-top:10px;
 

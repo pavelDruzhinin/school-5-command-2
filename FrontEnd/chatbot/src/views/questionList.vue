@@ -24,7 +24,7 @@
           <p>Список вопросов:</p>
 
           <button class="myBtn " @click="changeVisible()">
-            ✚
+            Добавить ✚
           </button>
 
           <div class="customModal" v-if="showModalQwestion">
@@ -56,7 +56,7 @@
 
                 <div class="variants" v-if="checkBoxPush">
                   <button class="myBtn btnNarrow" @click="addRow()">
-                    Добавить варант
+                    Добавить варант ✚
                   </button>
                   <div class="addVariantBlock">
                     <ul>
@@ -72,7 +72,7 @@
                             class="myBtn deleteBtn"
                             @click="deleteInputVariant(index)"
                           >
-                            &times;
+                            Удалить &times;
                           </button>
                         </div>
                       </li>
@@ -101,13 +101,13 @@
                         class="myBtn btnLittleNarrow"
                         @click="EditQuestion(item,key)"
                     >
-                        редактировать
+                        Редактировать ✎
                     </button>
                     <button
                         class="myBtn btnLittleDelete"
                         @click="DeleteQuestion(key)"
                     >
-                        &times;
+                        Удалить &times;
                     </button>
                 </div>
               </div>
@@ -352,7 +352,7 @@ body{
 	height: 30px;
 }
 .btnLittleNarrow{
-	width: 137px;
+	width: 141px;
     height: 23px;
 	font-size: 71%;
     vertical-align: middle;
@@ -361,7 +361,7 @@ body{
 	
 }
 .btnLittleDelete{
-	width: 23px;
+	width: 85px;
 	height: 23px;
 	font-size: 71%;
     vertical-align: middle;
@@ -386,7 +386,7 @@ body{
     margin-top: 0.5%;
 }
 .deleteBtn{
-	width: 25px;
+	width: 103px;
     height: 25px;
 	margin: 2% 0 2% 2%;
 	text-align: center;
