@@ -72,7 +72,7 @@
                             class="myBtn deleteBtn"
                             @click="deleteInputVariant(index)"
                           >
-                            &times
+                            &times;
                           </button>
                         </div>
                       </li>
@@ -93,20 +93,24 @@
 
           <ul class="NumMarker">
             <li class="questionText" v-for="(item,key, index) in tasks" :key="index">
-              {{item.name}}
+              <div class="questionBlock">
+                {{item.name}}                     
 
-              <button
-                class="myBtn btnLittleNarrow"
-                @click="EditQuestion(item,key)"
-              >
-                редактировать
-              </button>
-              <button
-                class="myBtn btnLittleDelete"
-                @click="DeleteQuestion(key)"
-              >
-                &times;
-              </button>
+                <div class="btPanel">
+                    <button
+                        class="myBtn btnLittleNarrow"
+                        @click="EditQuestion(item,key)"
+                    >
+                        редактировать
+                    </button>
+                    <button
+                        class="myBtn btnLittleDelete"
+                        @click="DeleteQuestion(key)"
+                    >
+                        &times;
+                    </button>
+                </div>
+              </div>
 
               <ul class="circleMarker">
                 <li v-for="(item) in item.variants" class="variantTex" :key="item">
@@ -163,7 +167,7 @@ export default {
                   status: ""
                 },
                 {
-                  name: "Вы согласны на командироваки? Как часто?",
+                  name: "Вы согласны на командировки? Как часто?",
                   variants: ["нет", "да, если не часто", "да"],
                   status: ""
                 },
@@ -294,7 +298,7 @@ body{
 	margin-top: 2%;
 }
 
-.list, .helloBlock, .newQuestion, .variants{
+.list, .helloBlock, .newQuestion{
 	margin: 5%;
 
 }
@@ -350,13 +354,19 @@ body{
 .btnLittleNarrow{
 	width: 137px;
     height: 23px;
-	font-size: 77%;
+	font-size: 71%;
+    vertical-align: middle;
+    line-height: 11px;
+    margin: 1%;
 	
 }
 .btnLittleDelete{
 	width: 23px;
 	height: 23px;
-	font-size: 77%;
+	font-size: 71%;
+    vertical-align: middle;
+    line-height: 11px;
+    margin: 1%;
 }
 
 .myBtn:hover{
@@ -368,25 +378,31 @@ body{
 	height: 50px;
 }
 .closeBtn{
-	width: 31px;
-    height: 31px;
+	width: 30px;
+    height: 30px;
 	float: right;
+    line-height: 14px;
+    vertical-align: middle;
+    margin-top: 0.5%;
 }
 .deleteBtn{
 	width: 25px;
     height: 25px;
-	margin: 2%;
+	margin: 2% 0 2% 2%;
 	text-align: center;
+    line-height: 20px;
 }
 .helloBlock span, .newQuestion span, .list p{
-		font-size: 150%;
+		font-size: 140%;
 		color: #0e3f50;
 		font-weight: bold;
 		margin-bottom: 2%;
 }
 ul li.questionText{
 	font-size: 130%;
-	margin: 2%;
+	margin-top: 2%;
+    margin-bottom: 2%;
+    margin-left: 2%;
 	font-weight: bold;
 }
 ul li.questionText:hover{
@@ -414,7 +430,7 @@ ul.circleMarker{
 	margin-bottom: 2%;
 }
 .question, .hellow, .goodbye{
-	width: 70%;
+	width: 71%;
 	height: 100px;
 	margin-left: 2%;
 	border-radius: 5px;
@@ -493,7 +509,7 @@ text-align: right;
 	margin: 2% 5% 2% 5%
 }
 .variantText{
-	width: 250px;
+	width: 483px;
 	height: 25px;
 }
 ul{
@@ -516,5 +532,14 @@ ul li{
 .btnPanel{
 	width: 30%;
 }
+.btPanel, .questionBlock{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    align-content: center;
+    line-height: 24px;
+}
+
 
 </style>
