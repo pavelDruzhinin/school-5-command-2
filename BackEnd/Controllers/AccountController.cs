@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using ChatsConstructor.WebApi.Models.Domains;
-using ChatsConstructor.WebApi.ViewModels;
+using ChatsConstructor.WebApi.Dto;
 
 namespace Application.Web.Controllers
 {
@@ -34,7 +34,7 @@ namespace Application.Web.Controllers
         /// <response code='401'>Решистрация отклонена(?)</response>
         [HttpPost]
         [Route("Register")]
-        public async Task<string> Register (RegisterViewModel model)
+        public async Task<string> Register (RegisterDto model)
         {
             if (ModelState.IsValid)
             {
@@ -64,10 +64,9 @@ namespace Application.Web.Controllers
         /// <param name="model"></param>
         /// <response code='200'> Пользователь успешно авторизован</response>
         /// <response code='401'> Пользователь не прошел аутентификацию</response>
-
         [HttpPost]
         [Route("Login")]
-        public async Task<string> Login(LoginViewModel model)
+        public async Task<string> Login(LoginDto model)
         {
             if (ModelState.IsValid)
             {

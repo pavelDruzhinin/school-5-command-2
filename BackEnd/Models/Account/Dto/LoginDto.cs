@@ -1,14 +1,16 @@
 using System.ComponentModel.DataAnnotations;
  
-namespace ChatsConstructor.WebApi.ViewModels
+namespace ChatsConstructor.WebApi.Dto
 {
-    public class RegisterViewModel
+    public class LoginDto
     {
         [Required]
         public string Email { get; set; }
-
+         
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+         
+        public bool RememberMe { get; set; }
     }
 }
