@@ -13,7 +13,7 @@
         </b-nav-form>
         <b-nav-form v-else>
           <b-nav-text class="mr-2 my-sm-0">{{profile.FullName}}</b-nav-text>
-          <b-button class="" @click.prevent="logout" type="submit">Logout</b-button>
+          <b-button class @click.prevent="logout" type="submit">Logout</b-button>
         </b-nav-form>
       </b-navbar-nav>
     </b-collapse>
@@ -21,16 +21,17 @@
 </template>
 
 <script>
-  import { mapState, mapGetters,mapActions } from "vuex";
+  import { mapState, mapGetters, mapActions } from "vuex";
   export default {
     computed: {
-      ...mapState(['profile']),
-      ...mapGetters(['isAuthenticated']),
+      ...mapState(["profile"]),
+      ...mapGetters(["isAuthenticated"])
     },
-    methods:{
-      logout(){
-        this.$store.dispatch('logout')
-        .then(response=>this.$router.push("/"));
+    methods: {
+      logout() {
+        this.$store.dispatch("logout").
+        then(response => this.$router.push("/"));
+      }
     }
   };
 </script>
