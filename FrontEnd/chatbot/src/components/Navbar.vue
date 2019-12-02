@@ -28,7 +28,9 @@
       ...mapGetters(['isAuthenticated']),
     },
     methods:{
-      ...mapActions(['logout'])
+      logout(){
+        this.$store.dispatch('logout')
+        .then(response=>this.$router.push("/"));
     }
   };
 </script>

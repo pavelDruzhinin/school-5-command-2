@@ -26,16 +26,23 @@ export default new Vuex.Store({
       })
     },
     login({ commit }, credentials) {
-      return axios
+      return new Promise((resolve,reject)=>{
+        axios
         .post('account/login', credentials)
-        .then(response => commit('setProfile', response.data))
+        .then(response => {commit('setProfile', response.data); resolve(response)})
+        .catch(err=>reject(err))
+      })
     },
     logout({ commit }) {
-      return axios
+      return new Promise((resolve, reject)=>{
+        axios
         .post('account/logout')
-        .then(() =>
-          commit('setProfile', {})
-        )
+        .then(() =>{
+          commit('setProfile', {});
+        resolve(response)
+      })
+        .catch(err=>reject(err))
+      })
     },
     restoreContext({ commit }) {
       return axios
