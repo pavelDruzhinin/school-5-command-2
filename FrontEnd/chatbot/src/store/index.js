@@ -6,10 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    profile: {
-      FullName:'Alexei Freid Freidovich',
-      email:'a@a.com'
-    }
+    profile: {}
   },
   getters: {
     isAuthenticated: state => state.profile.FullName && state.profile.email
@@ -21,9 +18,12 @@ export default new Vuex.Store({
   },
   actions: {
     register({ commit }, model) {
-      return axios
-        .post('account/register', model)
-        .then(response => commit('setProfile', response.data))
+      return new Promise((resolve, reject) => {
+        axios
+          .post('account/register', model)
+          .then(response => { commit('setProfile', response.data); resolve(response) })
+          .catch(err => reject(err))
+      })
     },
     login({ commit }, credentials) {
       return axios
@@ -31,15 +31,15 @@ export default new Vuex.Store({
         .then(response => commit('setProfile', response.data))
     },
     logout({ commit }) {
-      // return axios
-        // .post('account/logout')
-        // .then(() => 
-        commit('setProfile', {})
-        // )
-    },
-    restoreContext({ commit}) {
       return axios
-      .get('account/context')
+        .post('account/logout')
+        .then(() =>
+          commit('setProfile', {})
+        )
+    },
+    restoreContext({ commit }) {
+      return axios
+        .get('account/context')
         .then(response => commit('setProfile', response.data))
     }
   },
