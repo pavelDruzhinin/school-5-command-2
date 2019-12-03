@@ -12,7 +12,7 @@
           <b-button class="my-2 my-sm-0" @click="$router.push({ name: 'Registration' })">Register</b-button>
         </b-nav-form>
         <b-nav-form v-else>
-          <b-nav-text class="mr-2 my-sm-0">{{profile.FullName}}</b-nav-text>
+          <b-nav-text class="mr-2 my-sm-0">{{profile.fullname}}</b-nav-text>
           <b-button class @click.prevent="logout" type="submit">Logout</b-button>
         </b-nav-form>
       </b-navbar-nav>

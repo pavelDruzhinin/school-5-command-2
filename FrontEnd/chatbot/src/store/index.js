@@ -9,7 +9,7 @@ export default new Vuex.Store({
     profile: {}
   },
   getters: {
-    isAuthenticated: state => state.profile.FullName && state.profile.email
+    isAuthenticated: state => state.profile.fullname && state.profile.email
   },
   mutations: {
     setProfile(state, profile) {
