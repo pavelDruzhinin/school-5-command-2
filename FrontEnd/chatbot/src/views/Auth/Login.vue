@@ -25,6 +25,9 @@
         ></b-form-input>
         <ValidatePassword :v="$v" />
       </b-form-group>
+      <b-form-checkbox
+      v-model="form.RememberMe"
+      >Remember Me</b-form-checkbox>
       <b-button type="submit" variant="primary">Log In</b-button>
     </b-form>
   </div>
@@ -53,7 +56,8 @@
       return {
         form: {
           Email: "",
-          Password: ""
+          Password: "",
+          RememberMe:true
         }
       };
     },
@@ -65,7 +69,7 @@
         },
         Password: {
           required,
-          minLength: minLength(4)
+          minLength: minLength(5)
         }
     }
     },

@@ -7,8 +7,8 @@ const ifAuth = (to,from,next) => {
   else next();
 }
 const ifNotAuth = (to, from, next) => {
-  if(store.getters.isAuthenticated) next()
-  else next('/auth/login')
+  if(!store.getters.isAuthenticated) next('/auth/login')
+  else next()
 }
 
 Vue.use(VueRouter)

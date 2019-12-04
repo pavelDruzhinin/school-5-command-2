@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace BackEnd
 {
@@ -37,6 +38,13 @@ namespace BackEnd
                 opts.Password.RequireDigit = false; // требуются ли цифры
             })
             .AddEntityFrameworkStores<ChatsConstructorContext>();
+            services.ConfigureApplicationCookie(c=>{
+                c.Events.OnRedirectToLogin = context=>{
+                    context.Response.StatusCode = 401;
+                    return Task.CompletedTask;
+                };
+            });
+
 
             services.AddControllers();
             //1 шаг - регистрируем swagger и настраиваем

@@ -6,10 +6,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    profile: {}
+    profile: {
+    }
   },
   getters: {
-    isAuthenticated: state => state.profile.fullname && state.profile.email
+    isAuthenticated: state => state.profile.email
   },
   mutations: {
     setProfile(state, profile) {
@@ -20,34 +21,36 @@ export default new Vuex.Store({
     register({ commit }, model) {
       return new Promise((resolve, reject) => {
         axios
-          .post('account/register', model)
+          .post('/account/register', model)
           .then(response => { commit('setProfile', response.data); resolve(response) })
           .catch(err => reject(err))
       })
     },
-    login({ commit }, credentials) {
-      return new Promise((resolve,reject)=>{
+    login({ commit }, model) {
+      return new Promise((resolve, reject) => {
         axios
-        .post('account/login', credentials)
-        .then(response => {commit('setProfile', response.data); resolve(response)})
-        .catch(err=>reject(err))
+          .post('/account/login', model)
+          .then(response => { commit('setProfile', response.data); resolve(response) })
+          .catch(err => reject(err))
       })
     },
     logout({ commit }) {
-      return new Promise((resolve, reject)=>{
+      return new Promise((resolve, reject) => {
         axios
-        .post('account/logout')
-        .then(() =>{
-          commit('setProfile', {});
-        resolve(response)
-      })
-        .catch(err=>reject(err))
+          .post('/account/logout')
+          .then(() => {
+            commit('setProfile', {});
+            resolve()
+          })
+          .catch(err => reject(err))
       })
     },
     restoreContext({ commit }) {
-      return axios
-        .get('account/context')
-        .then(response => commit('setProfile', response.data))
+      return new Promise((resolve,reject) =>{
+        axios
+        .get('/account/context')
+        .then(response => {commit('setProfile', response.data); resolve(response)})
+      })
     }
   },
 })

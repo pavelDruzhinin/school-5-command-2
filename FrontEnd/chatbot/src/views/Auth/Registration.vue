@@ -90,7 +90,7 @@
     email,
     minLength,
     sameAs,
-    alpha
+    helpers
   } from "vuelidate/lib/validators";
 
   import ValidateEmail from "@/components/Validations/ValidateEmail.vue";
@@ -130,24 +130,22 @@
         },
         Password: {
           required,
-          minLength: minLength(4)
+          minLength: minLength(5)
         },
         ConfirmPassword: {
-          required,
-          minLength: minLength(4),
           sameAsPassword: sameAs("Password")
         },
         FirstName:{
           required,
-          alpha
+          alpha:helpers.regex('alpha',/^[a-zA-Zа-яА-Я]+$/)
         },
         LastName:{
           required,
-          alpha
+          alpha:helpers.regex('alpha',/^[a-zA-Zа-яА-Я]+$/)
         },
         MiddleName: {
           required,
-          alpha
+          alpha:helpers.regex('alpha',/^[a-zA-Zа-яА-Я]+$/)
         }
       }
     },
