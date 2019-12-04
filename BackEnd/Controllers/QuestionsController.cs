@@ -1,75 +1,107 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using ChatsConstructor.WebApi.Dto;
 using ChatsConstructor.WebApi.Models;
 using ChatsConstructor.WebApi.Models.Domains;
 using ChatsConstructor.WebApi.Models.Domains.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 
 
 namespace ChatsConstructor.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class QuestionsController : ControllerBase
     {
         private ChatsConstructorContext _db;
-        // private readonly UserManager<User> _userManager;
-        public QuestionsController(ChatsConstructorContext db)
+        private readonly UserManager<User> _userManager;
+        public QuestionsController(UserManager<User> userManager, ChatsConstructorContext db)
         {
             _db = db;
 
-           // _userManager = userManager;
+            _userManager = userManager;
         }
 
         ///<summary>
-        ///Метод GetQuestionsByChatId выводит
-        ///вопросы в выбранном чате
+        ///РњРµС‚РѕРґ GetQuestionsByChatId РІС‹РІРѕРґРёС‚
+        ///РІРѕРїСЂРѕСЃС‹ РІ РІС‹Р±СЂР°РЅРЅРѕРј С‡Р°С‚Рµ
         ///</summary>
-        ///<param name="chatId">Идентификатор чата</param>
-        /*[HttpGet]
-         [Route("{chatId}/questions")]
-        public IEnumerable<Question> GetQuestionsByChatId(long chatId)
-        {
-            var questions = _db.Questions.Where(x => x.ChatId == chatId).ToList();
-            return questions; 
-        }*/
+        ///<param name="chatId">РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‡Р°С‚Р°</param>
+
         [HttpGet]
-        [Route("questions")]
-        public IActionResult GetQuestionsByChatId(long chatId)
+        [Route("{chatId}")]
+        public async Task<IActionResult> GetQuestionsByChatId(long chatId)
         {
-            var questions = _db.Questions.Where(x => x.ChatId == chatId).ToList();
-            if (questions==null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return new ObjectResult(questions);
-            }
+            var user = await _userManager.GetUserAsync(User);
+
+            var questions = _db.Questions
+                            .Where(x => x.ChatId == chatId).ToList()
+                            .Select(x => new { x.QueueNumber, x.Text, x.QuestionType, x.Chat })
+                            .ToList();
+            return Ok(questions);
         }
 #nullable enable
         ///<summary>
-        ///Метод CreateQuestion создает
-        ///вопросы с кнопками или без
+        ///РњРµС‚РѕРґ CreateQuestion СЃРѕР·РґР°РµС‚
+        ///РІРѕРїСЂРѕСЃС‹ СЃ РєРЅРѕРїРєР°РјРё РёР»Рё Р±РµР·
         ///</summary>
-        /// <response code="201">Returns the newly created item</response>
-        /// <response code="400">If the item is null</response>     
-        // Представляю так: юзер ищет сначала вопросы по чатАйди, открыл. Там есть кнопка "Создать" с ссылкой на мой криэйт.
+        /// <response code="201">Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРѕР·РґР°РЅРЅС‹Р№ РІРѕРїСЂРѕСЃ</response>
+        /// <response code="400">РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ РІРѕРїСЂРѕСЃ</response>     
+        // РџСЂРµРґСЃС‚Р°РІР»СЏСЋ С‚Р°Рє: СЋР·РµСЂ РёС‰РµС‚ СЃРЅР°С‡Р°Р»Р° РІРѕРїСЂРѕСЃС‹ РїРѕ С‡Р°С‚РђР№РґРё,  РѕС‚РєСЂС‹Р». РўР°Рј РµСЃС‚СЊ РєРЅРѕРїРєР° "РЎРѕР·РґР°С‚СЊ" СЃ СЃСЃС‹Р»РєРѕР№ РЅР° РјРѕР№ РєСЂРёСЌР№С‚.
         [HttpPost]
-        [Route("questions/create")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult CreateQuestion(Question question, [FromForm]Button? button1)
+        [Route("{chatId}/create")]
+        public async Task<IActionResult> CreateQuestion([FromRoute]long chatId, QuestionDto ModelQ, [FromBody]ButtonDto? ModelB)
         {
-            _db.Questions.Add(question);
-            _db.Buttons.Add(button1);
-            _db.SaveChanges();
+            var user = await _userManager.GetUserAsync(User);
 
-            return CreatedAtRoute("GetQuestionsByChatId", new { chatId = question.ChatId }, question);
+            if (ModelState.IsValid)
+            {
+                Question question = new Question()
+                {
+                    ChatId = chatId,
+                    QueueNumber = ModelQ.QueueNumber,
+                    Text = ModelQ.Text,
+                    QuestionType = ModelQ.QuestionType
+                };
+
+                if ((int)ModelQ.QuestionType == 1)
+
+                {
+                    Button button = new Button()
+                    {
+                        QuestionId = question.Id,
+                        Text = ModelB.Text,
+                        ColorType = ModelB.ColorType
+                    };
+                    // РќР°Рј РЅР°РґРѕ РґРѕР±Р°РІРёС‚СЊ РјРёРЅРёРјСѓРј 2 РєРЅРѕРїРєРё, Р° СЏ Р·РґРµСЃСЊ РґРѕР±Р°РІР»СЏСЋ С‚РѕР»СЊРєРѕ 1?? РќСѓР¶РЅРѕ Р»Рё РґРѕРїРёСЃР°С‚СЊ РІ РїР°СЂР°РјРµС‚СЂС‹ ButtonDto? ModelB2 ?? Р° РµСЃР»Рё РєРЅРѕРїРѕРє >2?? 
+                    _db.Questions.Add(question);
+                    _db.Buttons.Add(button);
+                    _db.SaveChanges();
+                }
+                else
+                {
+                    _db.Questions.Add(question);
+                    _db.SaveChanges();
+                }
+                return Ok(new
+                {
+                    QueueNumber = ModelQ.QueueNumber,
+                    Text = ModelQ.Text,
+                    QuestionType = ModelQ.QuestionType
+                }
+                );
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
 
 
         }
