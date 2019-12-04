@@ -1,5 +1,15 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '@/store'
+
+const ifAuth = (to,from,next) => {
+  if(store.getters.isAuthenticated) next('/')
+  else next();
+}
+const ifNotAuth = (to, from, next) => {
+  if(!store.getters.isAuthenticated) next('/auth/login')
+  else next()
+}
 
 Vue.use(VueRouter)
 
@@ -14,6 +24,7 @@ const routes = [
   },
   {
     path: '/auth',
+    beforeEnter:ifAuth,
     components: {
       default: () => import('../views/Auth/Index.vue'),
       navbar: () => import('../components/Navbar.vue')
@@ -37,7 +48,7 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes,
-  linkExactActiveClass:"active"
+  linkExactActiveClass: "active"
 })
 
 export default router

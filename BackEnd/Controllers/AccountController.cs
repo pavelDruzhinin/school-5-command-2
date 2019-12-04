@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using ChatsConstructor.WebApi.Models.Domains;
 using ChatsConstructor.WebApi.Dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Application.Web.Controllers
 {
@@ -34,29 +35,35 @@ namespace Application.Web.Controllers
         /// <response code='401'>Решистрация отклонена(?)</response>
         [HttpPost]
         [Route("Register")]
-        public async Task<string> Register (RegisterDto model)
+        public async Task<ActionResult> Register(RegisterDto model)
         {
             if (ModelState.IsValid)
             {
-                User user = new User { Email = model.Email, UserName = model.Email };
+                var exist = await _userManager.FindByEmailAsync(model.Email);
+                if(exist!=null) return BadRequest("User with this Email is Exists");
+                User user = new User { Email = model.Email, UserName = model.Email, FirstName = model.FirstName, LastName = model.LastName, MiddleName = model.MiddleName };
                 // добавляем пользователя
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     // установка куки
                     await _signInManager.SignInAsync(user, false);
-                    return "{ error: 0, msg: \"Successful Registration\" }";
+                    return Json(new
+                    {
+                        email = model.Email,
+                        fullname = model.FirstName + " " + model.MiddleName + " " + model.LastName
+                    });
                 }
                 else
                 {
                     foreach (var error in result.Errors)
                     {
-                        //ModelState.AddModelError(string.Empty, error.Description);
-                        return "{ error: 2, msg: \"Wrong Data\" }";
+                        return Unauthorized(error.Description);
                     }
                 }
             }
-            return "{ error: 1, msg: \"Invalid Model\" }";
+            else return BadRequest("Проблема с моделью");
+            return BadRequest("Что-то пошло не так");
         }
         /// <summary>
         /// Авторизация пользователя
@@ -66,7 +73,7 @@ namespace Application.Web.Controllers
         /// <response code='401'> Пользователь не прошел аутентификацию</response>
         [HttpPost]
         [Route("Login")]
-        public async Task<string> Login(LoginDto model)
+        public async Task<ActionResult> Login(LoginDto model)
         {
             if (ModelState.IsValid)
             {
@@ -74,14 +81,19 @@ namespace Application.Web.Controllers
                     await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
                 if (result.Succeeded)
                 {
-                    return "{ error: 0, msg: \"Successful Login\" }";
+                    var user = await _signInManager.UserManager.FindByEmailAsync(model.Email);
+                    return Json(new
+                    {
+                        email = user.Email,
+                        fullname = user.FirstName + " " + user.MiddleName + " " + user.LastName
+                    });
                 }
                 else
                 {
-                    return "{ error: 2,  msg: \"Wrong Email or Password\" }";
+                    return Unauthorized("Логин не удался");
                 }
             }
-            return "{ error: 1,  msg: \"Invalid Model\" }";
+            return BadRequest("Модель не верна");
         }
         /// <summary>
         /// Выход пользователя из учетной записи
@@ -89,11 +101,30 @@ namespace Application.Web.Controllers
         ///<response code='200'></response>
         [HttpPost]
         [Route("Logout")]
-        public async Task<string> Logout()
+        public async Task<ActionResult> Logout()
         {
             // удаляем аутентификационные куки
             await _signInManager.SignOutAsync();
-            return "{ error: 0,  msg: \"Successful Logout\" }";
+            return Ok("Выход успешен");
+        }
+        /// <summary>
+        /// Нужен для возвращения состояния аккаунта на Фронтэнд
+        /// </summary>
+        ///<response code='200'>Возврат Json с данными юзера или если он не залогинен</response>
+        [HttpGet]
+        [Route("Context")]
+        public async Task<ActionResult> Context()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                return Json(new
+                {
+                    email = user.Email,
+                    fullname = user.FirstName + " " + user.MiddleName + " " + user.LastName
+                });
+            }
+            return Ok("Не залогинен");
         }
     }
 }

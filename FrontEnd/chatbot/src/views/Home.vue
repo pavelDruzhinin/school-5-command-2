@@ -1,19 +1,30 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    Типа лендос
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h3 class="my-2 ml-2">Добро пожаловать на наш сайт</h3>
+    <hr />
+    <p class="ml-2">Данный сайт предназначен для построения чат-ботов для разных целей</p>
+    <p class="ml-2">Например:</p>
+    <ul>
+      <li>Для проведения социологических опросов</li>
+      <li>Для поиска соискателей без присутствия HR-менеджеров</li>
+      <li>Для оценки работы различных сервисов</li>
+    </ul>
+    <p class="ml-2">Для того, чтобы начать использовать конструктор, вам нужно зарегистрироваться.</p>
+    <p class="ml-2">После регистрации вам откроется возможность создать своего чат бота, просматривать список созданных вами чатов,
+      <br />а также просматривать список пройденных вами чат-бот анкет
+    </p>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
 export default {
-  name: 'home',
-  components: {
-    HelloWorld
-  }
 }
 </script>
+
+<style lang="scss" scoped>
+  .home{
+    ul{
+      list-style-type:decimal;
+    }
+  }
+</style>
