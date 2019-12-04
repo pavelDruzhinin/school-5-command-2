@@ -34,29 +34,36 @@ namespace Application.Web.Controllers
         /// <response code='401'>Решистрация отклонена(?)</response>
         [HttpPost]
         [Route("Register")]
-        public async Task<string> Register (RegisterDto model)
+        public async Task<IActionResult> Register(RegisterDto model)
         {
             if (ModelState.IsValid)
             {
-                User user = new User { Email = model.Email, UserName = model.Email };
+                User user = new User
+                {
+                    Email = model.Email,
+                    UserName = model.Email,
+                    FirstName = model.FirstName,
+                    MiddleName = model.MiddleName,
+                    LastName = model.LastName
+                };
                 // добавляем пользователя
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     // установка куки
                     await _signInManager.SignInAsync(user, false);
-                    return "{ error: 0, msg: \"Successful Registration\" }";
+                    return Json(new { email = model.Email, fullname = model.FirstName + " " + model.MiddleName + " " + model.LastName });
                 }
                 else
                 {
                     foreach (var error in result.Errors)
                     {
                         //ModelState.AddModelError(string.Empty, error.Description);
-                        return "{ error: 2, msg: \"Wrong Data\" }";
+                        return Unauthorized("{ error: 2, msg: \"Wrong Data\" }");
                     }
                 }
             }
-            return "{ error: 1, msg: \"Invalid Model\" }";
+            return BadRequest("{ error: 1, msg: \"Invalid Model\" }");
         }
         /// <summary>
         /// Авторизация пользователя
