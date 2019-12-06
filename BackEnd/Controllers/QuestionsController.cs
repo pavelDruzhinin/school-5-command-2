@@ -1,109 +1,125 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using ChatsConstructor.WebApi.Dto;
 using ChatsConstructor.WebApi.Models;
 using ChatsConstructor.WebApi.Models.Domains;
 using ChatsConstructor.WebApi.Models.Domains.Enums;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-
-
 namespace ChatsConstructor.WebApi.Controllers
 {
-    [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [Route("[controller]")]
     public class QuestionsController : ControllerBase
     {
-        private ChatsConstructorContext _db;
         private readonly UserManager<User> _userManager;
+        private readonly ChatsConstructorContext _db;
         public QuestionsController(UserManager<User> userManager, ChatsConstructorContext db)
         {
-            _db = db;
-
             _userManager = userManager;
+            _db = db;
         }
-
-        ///<summary>
-        ///Метод GetQuestionsByChatId выводит
-        ///вопросы в выбранном чате
-        ///</summary>
-        ///<param name="chatId">Идентификатор чата</param>
 
         [HttpGet]
-        [Route("{chatId}")]
-        public async Task<IActionResult> GetQuestionsByChatId(long chatId)
+        [Route("{ChatId}")]
+        public IActionResult Get(long ChatId)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var QuestionsList = _db.Questions
+                    .Where(x => x.ChatId == ChatId && x.DeleteUtcDateTime == null)
+                    .OrderBy(x => x.QueueNumber)
+                    .Select(x => new { x.Id, x.Text, x.QueueNumber }).ToList();
 
-            var questions = _db.Questions
-                            .Where(x => x.ChatId == chatId).ToList()
-                            .Select(x => new { x.QueueNumber, x.Text, x.QuestionType, x.Chat })
-                            .ToList();
-            return Ok(questions);
+            var QuestionsListResponse = new List<Object>() { };
+
+            foreach (var QuestionsListItem in QuestionsList)
+            {
+                QuestionsListResponse.Add(new
+                {
+                    Id = QuestionsListItem.Id,
+                    Text = QuestionsListItem.Text,
+                    QueueNumber = QuestionsListItem.QueueNumber,
+                    Buttons = _db.Buttons.Where(x => x.QuestionId == QuestionsListItem.Id).Select(x => new { x.Id, x.Text }).ToList()
+                });
+            }
+
+            return Ok(QuestionsListResponse);
         }
-#nullable enable
-        ///<summary>
-        ///Метод CreateQuestion создает
-        ///вопросы с кнопками или без
-        ///</summary>
-        /// <response code="201">Возвращает созданный вопрос</response>
-        /// <response code="400">Не удалось создать вопрос</response>     
-        // Представляю так: юзер ищет сначала вопросы по чатАйди,  открыл. Там есть кнопка "Создать" с ссылкой на мой криэйт.
-        [HttpPost]
-        [Route("{chatId}/create")]
-        public async Task<IActionResult> CreateQuestion([FromRoute]long chatId, QuestionDto ModelQ, [FromBody]ButtonDto? ModelB)
-        {
-            var user = await _userManager.GetUserAsync(User);
 
+        [HttpPost]
+        [Route("{ChatId}")]
+        public IActionResult Add(long ChatId, QuestionsDto Model)
+        {
             if (ModelState.IsValid)
             {
-                Question question = new Question()
-                {
-                    ChatId = chatId,
-                    QueueNumber = ModelQ.QueueNumber,
-                    Text = ModelQ.Text,
-                    QuestionType = ModelQ.QuestionType
-                };
+                short queueNumber = 0;
 
-                if ((int)ModelQ.QuestionType == 1)
-
+                foreach (QuestionDto question in Model.Questions)
                 {
-                    Button button = new Button()
+                    QuestionType qt;
+                    if (question.Buttons == null)
                     {
-                        QuestionId = question.Id,
-                        Text = ModelB.Text,
-                        ColorType = ModelB.ColorType
+                        qt = QuestionType.OnlyChatAvailable;
+                    }
+                    else
+                    {
+                        qt = QuestionType.OnlyButtonsAvailable;
+                    }
+
+                    Question q = new Question()
+                    {
+                        ChatId = ChatId,
+                        Text = question.Text,
+                        QueueNumber = ++queueNumber,
+                        QuestionType = qt
                     };
-                    // Нам надо добавить минимум 2 кнопки, а я здесь добавляю только 1?? Нужно ли дописать в параметры ButtonDto? ModelB2 ?? а если кнопок >2?? 
-                    _db.Questions.Add(question);
-                    _db.Buttons.Add(button);
+
+                    _db.Questions.Add(q);
                     _db.SaveChanges();
+
+                    if (question.Buttons != null)
+                    {
+                        foreach (ButtonDto button in question.Buttons)
+                        {
+                            Button b = new Button()
+                            {
+                                QuestionId = q.Id,
+                                Text = button.Text
+                            };
+
+                            _db.Buttons.Add(b);
+                            _db.SaveChanges();
+                        }
+                    }
                 }
-                else
+
+                var QuestionsList = _db.Questions
+                    .Where(x => x.ChatId == ChatId && x.DeleteUtcDateTime == null)
+                    .OrderBy(x => x.QueueNumber)
+                    .Select(x => new { x.Id, x.Text, x.QueueNumber }).ToList();
+
+                var QuestionsListResponse = new List<Object>() { };
+
+                foreach (var QuestionsListItem in QuestionsList)
                 {
-                    _db.Questions.Add(question);
-                    _db.SaveChanges();
+                    QuestionsListResponse.Add(new
+                    {
+                        Id = QuestionsListItem.Id,
+                        Text = QuestionsListItem.Text,
+                        QueueNumber = QuestionsListItem.QueueNumber,
+                        Buttons = _db.Buttons.Where(x => x.QuestionId == QuestionsListItem.Id).Select(x => new { x.Id, x.Text }).ToList()
+                    });
                 }
-                return Ok(new
-                {
-                    QueueNumber = ModelQ.QueueNumber,
-                    Text = ModelQ.Text,
-                    QuestionType = ModelQ.QuestionType
-                }
-                );
+
+                return Ok(QuestionsListResponse);
             }
             else
             {
                 return BadRequest(ModelState);
             }
-
-
         }
     }
 }
