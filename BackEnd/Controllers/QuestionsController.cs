@@ -72,7 +72,7 @@ namespace ChatsConstructor.WebApi.Controllers
                         {
                             ChatId = ChatId,
                             Text = questionDto.Text,
-                            QueueNumber = ++queueNumber,
+                            QueueNumber = queueNumber++,
                             QuestionAnswerType = qt
                         };
 
@@ -81,7 +81,7 @@ namespace ChatsConstructor.WebApi.Controllers
                         q = _db.Questions.FirstOrDefault(x => x.Id == questionDto.Id);
                         
                         q.Text = questionDto.Text;
-                        q.QueueNumber = ++queueNumber;
+                        q.QueueNumber = queueNumber++;
                         q.QuestionAnswerType = qt;
 
                         _db.Questions.Update(q);
