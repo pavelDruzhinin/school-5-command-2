@@ -1,77 +1,143 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
+using System.Threading.Tasks;
+using ChatsConstructor.WebApi.Dto;
 using ChatsConstructor.WebApi.Models;
 using ChatsConstructor.WebApi.Models.Domains;
 using ChatsConstructor.WebApi.Models.Domains.Enums;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
-
 
 namespace ChatsConstructor.WebApi.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Route("[controller]")]
     public class QuestionsController : ControllerBase
     {
-        private ChatsConstructorContext _db;
-        // private readonly UserManager<User> _userManager;
-        public QuestionsController(ChatsConstructorContext db)
+        private readonly UserManager<User> _userManager;
+        private readonly ChatsConstructorContext _db;
+        public QuestionsController(UserManager<User> userManager, ChatsConstructorContext db)
         {
+            _userManager = userManager;
             _db = db;
-
-           // _userManager = userManager;
         }
 
-        ///<summary>
-        ///Метод GetQuestionsByChatId выводит
-        ///вопросы в выбранном чате
-        ///</summary>
-        ///<param name="chatId">Идентификатор чата</param>
-        /*[HttpGet]
-         [Route("{chatId}/questions")]
-        public IEnumerable<Question> GetQuestionsByChatId(long chatId)
-        {
-            var questions = _db.Questions.Where(x => x.ChatId == chatId).ToList();
-            return questions; 
-        }*/
         [HttpGet]
-        [Route("questions")]
-        public IActionResult GetQuestionsByChatId(long chatId)
+        [Route("{ChatId}")]
+        public IActionResult Get(long ChatId)
         {
-            var questions = _db.Questions.Where(x => x.ChatId == chatId).ToList();
-            if (questions==null)
+            var QuestionsList = _db.Questions
+                    .Where(x => x.ChatId == ChatId && x.DeleteUtcDateTime == null)
+                    .OrderBy(x => x.QueueNumber)
+                    .Select(x => new { x.Id, x.Text, x.QueueNumber }).ToList();
+
+            var QuestionsListResponse = new List<Object>() { };
+
+            foreach (var QuestionsListItem in QuestionsList)
             {
-                return NotFound();
+                QuestionsListResponse.Add(new
+                {
+                    Id = QuestionsListItem.Id,
+                    Text = QuestionsListItem.Text,
+                    QueueNumber = QuestionsListItem.QueueNumber,
+                    Buttons = _db.Buttons.Where(x => x.QuestionId == QuestionsListItem.Id).Select(x => new { x.Id, x.Text }).ToList()
+                });
+            }
+
+            return Ok(QuestionsListResponse);
+        }
+
+        [HttpPost]
+        [Route("{ChatId}")]
+        public IActionResult Add(long ChatId, QuestionsDto Model)
+        {
+            if (ModelState.IsValid)
+            {
+                short queueNumber = 0;
+
+                foreach (QuestionDto questionDto in Model.Questions)
+                {   
+                    Question q;
+                    QuestionType qt;
+
+                    if (questionDto.Buttons == null)
+                        qt = QuestionType.OnlyChatAvailable;
+                    else
+                        qt = QuestionType.OnlyButtonsAvailable;
+
+                    if (questionDto.Id == null) {
+                        q = new Question()
+                        {
+                            ChatId = ChatId,
+                            Text = questionDto.Text,
+                            QueueNumber = ++queueNumber,
+                            QuestionType = qt
+                        };
+
+                        _db.Questions.Add(q);
+                    } else {
+                        q = _db.Questions.FirstOrDefault(x => x.Id == questionDto.Id);
+                        
+                        q.Text = questionDto.Text;
+                        q.QueueNumber = ++queueNumber;
+                        q.QuestionType = qt;
+
+                        _db.Questions.Update(q);
+                    }
+
+                    _db.SaveChanges();
+
+                    if (questionDto.Buttons != null)
+                    {
+                        foreach (ButtonDto buttonDto in questionDto.Buttons)
+                        {
+                            if (buttonDto.Id == null) {
+                                Button b = new Button()
+                                {
+                                    QuestionId = q.Id,
+                                    Text = buttonDto.Text
+                                };
+
+                                 _db.Buttons.Add(b);
+                            } else {
+                                Button b = _db.Buttons.FirstOrDefault(x => x.Id == buttonDto.Id);
+
+                                b.Text = buttonDto.Text;
+
+                                _db.Buttons.Update(b);
+                            }
+                           
+                            _db.SaveChanges();
+                        }
+                    }
+                }
+
+                var QuestionsList = _db.Questions
+                    .Where(x => x.ChatId == ChatId && x.DeleteUtcDateTime == null)
+                    .OrderBy(x => x.QueueNumber)
+                    .Select(x => new { x.Id, x.Text, x.QueueNumber }).ToList();
+
+                var QuestionsListResponse = new List<Object>() { };
+
+                foreach (var QuestionsListItem in QuestionsList)
+                {
+                    QuestionsListResponse.Add(new
+                    {
+                        Id = QuestionsListItem.Id,
+                        Text = QuestionsListItem.Text,
+                        QueueNumber = QuestionsListItem.QueueNumber,
+                        Buttons = _db.Buttons.Where(x => x.QuestionId == QuestionsListItem.Id).Select(x => new { x.Id, x.Text }).ToList()
+                    });
+                }
+
+                return Ok(QuestionsListResponse);
             }
             else
             {
-                return new ObjectResult(questions);
+                return BadRequest(ModelState);
             }
-        }
-#nullable enable
-        ///<summary>
-        ///Метод CreateQuestion создает
-        ///вопросы с кнопками или без
-        ///</summary>
-        /// <response code="201">Returns the newly created item</response>
-        /// <response code="400">If the item is null</response>     
-        // Представляю так: юзер ищет сначала вопросы по чатАйди, открыл. Там есть кнопка "Создать" с ссылкой на мой криэйт.
-        [HttpPost]
-        [Route("questions/create")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult CreateQuestion(Question question, [FromForm]Button? button1)
-        {
-            _db.Questions.Add(question);
-            _db.Buttons.Add(button1);
-            _db.SaveChanges();
-
-            return CreatedAtRoute("GetQuestionsByChatId", new { chatId = question.ChatId }, question);
-
-
         }
     }
 }
