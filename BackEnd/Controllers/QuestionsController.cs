@@ -60,12 +60,12 @@ namespace ChatsConstructor.WebApi.Controllers
                 foreach (QuestionDto questionDto in Model.Questions)
                 {   
                     Question q;
-                    QuestionType qt;
+                    QuestionAnswerType qt;
 
                     if (questionDto.Buttons == null)
-                        qt = QuestionType.OnlyChatAvailable;
+                        qt = QuestionAnswerType.OnlyChatAvailable;
                     else
-                        qt = QuestionType.OnlyButtonsAvailable;
+                        qt = QuestionAnswerType.OnlyButtonsAvailable;
 
                     if (questionDto.Id == null) {
                         q = new Question()
@@ -73,7 +73,7 @@ namespace ChatsConstructor.WebApi.Controllers
                             ChatId = ChatId,
                             Text = questionDto.Text,
                             QueueNumber = ++queueNumber,
-                            QuestionType = qt
+                            QuestionAnswerType = qt
                         };
 
                         _db.Questions.Add(q);
@@ -82,7 +82,7 @@ namespace ChatsConstructor.WebApi.Controllers
                         
                         q.Text = questionDto.Text;
                         q.QueueNumber = ++queueNumber;
-                        q.QuestionType = qt;
+                        q.QuestionAnswerType = qt;
 
                         _db.Questions.Update(q);
                     }
