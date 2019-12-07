@@ -11,6 +11,7 @@ using System.Linq;
 
 namespace Application.Web.Controllers
 {
+    [Produces("application/json")]
     [ApiController]
     [Route("[controller]")]
     public class ChatsController : Controller
@@ -23,7 +24,13 @@ namespace Application.Web.Controllers
             _userManager = userManager;
             _db = db;
         }
-
+        /// <summary>
+        /// Получение списка чатов
+        /// </summary>
+        /// <remarks>
+        /// GET /Chats
+        /// </remarks>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Get ()
         {
@@ -35,7 +42,20 @@ namespace Application.Web.Controllers
 
             return Ok(chatsList);
         }
-
+        /// <summary>
+        /// Добавление нового чата
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///     POST /Chats/Add
+        ///     {
+        ///         "Name" : "Test chat"
+        ///     }
+        /// </remarks>
+        /// <param name="Model"></param>
+        /// <returns></returns>
+        /// <response code='200'>Success</response>
+        /// <response code='500'>Internall server error</response>
         [HttpPost]
         [Route("Add")]
         public async Task<IActionResult> Add (ChatDto Model)

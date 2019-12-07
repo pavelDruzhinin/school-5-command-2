@@ -20,19 +20,22 @@ namespace Application.Web.Controllers
             _signInManager = signInManager;
         }
 
-        //remarks описание метода
-        //GET /GetUser
-        //  {
-        //    "id":1
-        //}
 
         /// <summary>
         /// Регистрация нового пользователя
         /// </summary>
+        /// <remarks> 
+        /// POST **/Register**
+        /// {
+        ///   'Email' : test@test.ru,
+        ///   'Password' : password
+        /// }
+        ///</remarks>
         /// <param name="model">Имя и почта пользователя </param>
         /// <remarks></remarks>        
         /// <response code='200'>Пользователь успешно зарегистрирован</response>
         /// <response code='401'>Решистрация отклонена(?)</response>
+
         [HttpPost]
         [Route("Register")]
         public async Task<ActionResult> Register(RegisterDto model)

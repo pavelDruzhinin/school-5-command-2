@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.IO;
 using System.Threading.Tasks;
+using SwaggerSettings = ChatsConstructor.WebApi.Settings.SwaggerSettings;
 
 namespace BackEnd
 {
@@ -48,13 +49,13 @@ namespace BackEnd
 
             services.AddControllers();
             //1 шаг - регистрируем swagger и настраиваем
-            // Register the Swagger generator, defining 1 or more Swagger documents
+ 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { 
                     Title = "Web API",
                     Version = "v1",
-                    Description = "Chats constructor Web API"
+                    //Description = "Chats constructor Web API"
                 
                 });
 
@@ -82,12 +83,16 @@ namespace BackEnd
 
             app.UseAuthentication();
             app.UseAuthorization();
-            // Enable middleware to serve swagger-ui(HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
+            var swaggerSettings = new SwaggerSettings();
+            Configuration.GetSection(nameof(swaggerSettings)).Bind(swaggerSettings);
+            app.UseSwagger(option =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Chats constructor Web API");
-                c.RoutePrefix = string.Empty;
+                option.RouteTemplate = swaggerSettings.JsonRoute;
+            });
+            app.UseSwaggerUI(option =>
+            {
+                option.SwaggerEndpoint(swaggerSettings.UiEndpoint, swaggerSettings.Description);
+                option.RoutePrefix = "WebApi/swagger";
             });
 
             app.UseEndpoints(endpoints =>

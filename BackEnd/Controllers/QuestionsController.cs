@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ChatsConstructor.WebApi.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize]
@@ -29,6 +30,7 @@ namespace ChatsConstructor.WebApi.Controllers
         ///Метод GetQuestionsByChatId выводит
         ///вопросы в выбранном чате
         ///</summary>
+        ///<type=> object</type>
         ///<param name="chatId">Идентификатор чата</param>
         /*[HttpGet]
          [Route("{chatId}/questions")]
