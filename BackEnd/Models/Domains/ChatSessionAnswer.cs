@@ -30,7 +30,7 @@ namespace ChatsConstructor.WebApi.Models.Domains
         /// <summary>
         /// Дата ответа на вопрос
         /// </summary>
-        public DateTime AnswerUtcDateTime { get; set; }
+        public DateTime? AnswerUtcDateTime { get; set; }
 
         /// <summary>
         /// Дата удаления ответа на вопрос
@@ -41,5 +41,10 @@ namespace ChatsConstructor.WebApi.Models.Domains
         /// Текст ответа на вопрос
         /// </summary>
         public string Text { get; set; }
+
+        /// <summary>
+        /// Ответили на вопрос?
+        /// </summary>
+        public bool IsAnswered { get { return !string.IsNullOrWhiteSpace(Text); } }
     }
 }

@@ -3,15 +3,17 @@ using System;
 using ChatsConstructor.WebApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ChatsConstructor.WebApi.Migrations
 {
     [DbContext(typeof(ChatsConstructorContext))]
-    partial class ChatsConstructorContextModelSnapshot : ModelSnapshot
+    [Migration("20191207142614_Develop-1.3")]
+    partial class Develop13
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
