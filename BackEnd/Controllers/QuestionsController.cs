@@ -57,40 +57,58 @@ namespace ChatsConstructor.WebApi.Controllers
             {
                 short queueNumber = 0;
 
-                foreach (QuestionDto question in Model.Questions)
-                {
+                foreach (QuestionDto questionDto in Model.Questions)
+                {   
+                    Question q;
                     QuestionType qt;
-                    if (question.Buttons == null)
-                    {
+
+                    if (questionDto.Buttons == null)
                         qt = QuestionType.OnlyChatAvailable;
-                    }
                     else
-                    {
                         qt = QuestionType.OnlyButtonsAvailable;
+
+                    if (questionDto.Id == null) {
+                        q = new Question()
+                        {
+                            ChatId = ChatId,
+                            Text = questionDto.Text,
+                            QueueNumber = ++queueNumber,
+                            QuestionType = qt
+                        };
+
+                        _db.Questions.Add(q);
+                    } else {
+                        q = _db.Questions.FirstOrDefault(x => x.Id == questionDto.Id);
+                        
+                        q.Text = questionDto.Text;
+                        q.QueueNumber = ++queueNumber;
+                        q.QuestionType = qt;
+
+                        _db.Questions.Update(q);
                     }
 
-                    Question q = new Question()
-                    {
-                        ChatId = ChatId,
-                        Text = question.Text,
-                        QueueNumber = ++queueNumber,
-                        QuestionType = qt
-                    };
-
-                    _db.Questions.Add(q);
                     _db.SaveChanges();
 
-                    if (question.Buttons != null)
+                    if (questionDto.Buttons != null)
                     {
-                        foreach (ButtonDto button in question.Buttons)
+                        foreach (ButtonDto buttonDto in questionDto.Buttons)
                         {
-                            Button b = new Button()
-                            {
-                                QuestionId = q.Id,
-                                Text = button.Text
-                            };
+                            if (buttonDto.Id == null) {
+                                Button b = new Button()
+                                {
+                                    QuestionId = q.Id,
+                                    Text = buttonDto.Text
+                                };
 
-                            _db.Buttons.Add(b);
+                                 _db.Buttons.Add(b);
+                            } else {
+                                Button b = _db.Buttons.FirstOrDefault(x => x.Id == buttonDto.Id);
+
+                                b.Text = buttonDto.Text;
+
+                                _db.Buttons.Update(b);
+                            }
+                           
                             _db.SaveChanges();
                         }
                     }

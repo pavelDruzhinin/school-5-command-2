@@ -5,7 +5,7 @@ namespace ChatsConstructor.WebApi.Dto
 {
     public class QuestionDto
     {
-        public long Id { get; set; }
+        public long? Id { get; set; }
         [Required]
         public string Text { get; set; }
 
