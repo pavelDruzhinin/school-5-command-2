@@ -41,12 +41,12 @@ namespace ChatsConstructor.WebApi.Models.Domains
         /// <summary>
         /// Текст приветствия
         /// </summary>
-        public string WelcomeText { get; set; }
+        //public string WelcomeText { get; set; }
 
         /// <summary>
         /// Текст завершающий диалог
         /// </summary>
-        public string FinalText { get; set; }
+        //public string FinalText { get; set; }
 
         /// <summary>
         /// Вопросы

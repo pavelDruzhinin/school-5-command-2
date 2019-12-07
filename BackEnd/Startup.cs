@@ -1,6 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
+using ChatsConstructor.WebApi.Hubs;
 using ChatsConstructor.WebApi.Models;
 using ChatsConstructor.WebApi.Models.Domains;
+using ChatsConstructor.WebApi.Models.Mapping;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -30,6 +36,11 @@ namespace BackEnd
             services.AddDbContext<ChatsConstructorContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
             services.AddIdentity<User, IdentityRole<Guid>>(opts => {
                 opts.Password.RequiredLength = 5;   // минимальная длина
                 opts.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
@@ -45,7 +56,7 @@ namespace BackEnd
                 };
             });
 
-
+            services.AddSignalR();
             services.AddControllers();
             //1 шаг - регистрируем swagger и настраиваем
             // Register the Swagger generator, defining 1 or more Swagger documents
@@ -92,6 +103,8 @@ namespace BackEnd
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<ChatHub>("/chat");
+
                 endpoints.MapControllers();
             });
         }
