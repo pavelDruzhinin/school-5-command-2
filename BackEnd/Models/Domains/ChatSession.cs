@@ -25,7 +25,7 @@ namespace ChatsConstructor.WebApi.Models.Domains
         /// <summary>
         /// Идентификатор чата
         /// </summary>
-        public long? ChatId { get; set; }
+        public long ChatId { get; set; }
         public Chat Chat { get; set; }
 
         /// <summary>
@@ -37,5 +37,10 @@ namespace ChatsConstructor.WebApi.Models.Domains
         /// Ответы на эту сессию
         /// </summary>
         public List<ChatSessionAnswer> ChatSessionAnswers { get; set; }
+
+        /// <summary>
+        /// Сессия завершена?
+        /// </summary>
+        public bool IsCompleted { get { return Status == SessionProgressType.Completed; } }
     }
 }

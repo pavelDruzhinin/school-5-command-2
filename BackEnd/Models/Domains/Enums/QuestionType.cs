@@ -11,13 +11,18 @@ namespace ChatsConstructor.WebApi.Models.Domains.Enums
     public enum QuestionType : byte
     {
         /// <summary>
-        /// Доступен только чат
+        /// Вопрос приветствия
         /// </summary>
-        OnlyChatAvailable,
+        Welcome = 0,
 
         /// <summary>
-        /// Доступны только кнопки
+        /// Обычный вопрос
         /// </summary>
-        OnlyButtonsAvailable
+        Normal = 1,
+
+        /// <summary>
+        /// Вопрос окончания диалога
+        /// </summary>
+        Final = 2
     }
 }
