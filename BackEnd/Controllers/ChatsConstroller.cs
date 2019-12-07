@@ -8,10 +8,12 @@ using System;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Application.Web.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
     public class ChatsController : Controller
     {

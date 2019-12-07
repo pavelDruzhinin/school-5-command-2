@@ -7,12 +7,14 @@ using ChatsConstructor.WebApi.Dto;
 using ChatsConstructor.WebApi.Models;
 using ChatsConstructor.WebApi.Models.Domains;
 using ChatsConstructor.WebApi.Models.Domains.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatsConstructor.WebApi.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
     public class QuestionsController : ControllerBase
     {
