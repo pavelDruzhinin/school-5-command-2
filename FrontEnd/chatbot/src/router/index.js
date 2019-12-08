@@ -23,6 +23,14 @@ const routes = [
     }
   },
   {
+    path: '/chat',
+    name: 'chat',
+    components: {
+      default: () => import('../views/chat.vue'),
+      navbar: () => import('../components/Navbar.vue')
+    } 
+  },
+  {
     path: '/auth',
     beforeEnter:ifAuth,
     components: {
