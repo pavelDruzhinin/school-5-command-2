@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Description;
 using ChatsConstructor.WebApi.Dto;
 using ChatsConstructor.WebApi.Models;
 using ChatsConstructor.WebApi.Models.Domains;
@@ -28,8 +29,22 @@ namespace ChatsConstructor.WebApi.Controllers
             _db = db;
         }
 
-
-
+        /// <summary>
+        /// Получение вопросов по идентификационному номеру чата 
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /Questions
+        ///     {
+        ///        "ChatId": 1        
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="ChatId">Идентификационный номер чата</param>
+        /// <returns>Возвращает список вопросов</returns>
+        /// <response code='200'>Возвращает  список вопросов</response>
+        ///<response code='401'>Unauthorized</response>
         [HttpGet]
         [Route("{ChatId}")]
         public IActionResult Get(long ChatId)
@@ -54,8 +69,23 @@ namespace ChatsConstructor.WebApi.Controllers
 
             return Ok(QuestionsListResponse);
         }
-
+        /// <summary>
+        /// Создание нового чата
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /Questions
+        ///     {
+        ///        "ChatId": 1        
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="ChatId">Идентификационный номер чата</param>
+        /// <param name="Model">Добавление вопроса в чат</param>
+        /// <returns></returns>
         [HttpPost]
+        [ResponseType(typeof(QuestionsDto))]
         [Route("{ChatId}")]
         public IActionResult Add(long ChatId, QuestionsDto Model)
         {

@@ -19,6 +19,9 @@ using System.Reflection;
 using System.IO;
 using System.Threading.Tasks;
 using SwaggerSettings = ChatsConstructor.WebApi.Settings.SwaggerSettings;
+using System.Xml.XPath;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Web.Http;
 
 namespace BackEnd
 {
@@ -59,20 +62,21 @@ namespace BackEnd
 
             services.AddSignalR();
             services.AddControllers();
-            //1 шаг - регистрируем swagger и настраиваем
- 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { 
                     Title = "Web API",
-                    Version = "v1",
-                    //Description = "Chats constructor Web API"
+                    Version = "v1"
                 
                 });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
+                //var comments = new XPathDocument(xmlPath);
+                //c.OperationFilter<XmlCommentsOperationFilter>(comments);
+                //c.SchemaFilter<XmlCommentsSchemaFilter>(comments);
+
 
             });
         }
@@ -89,6 +93,11 @@ namespace BackEnd
             }
 
             //app.UseHttpsRedirection();
+            var config = new HttpConfiguration();
+            var xmlFormatter = config.Formatters.XmlFormatter;
+
+            // Starts using XmlSerialiser rather than DataContractSerializer.
+            xmlFormatter.UseXmlSerializer = true;
 
             app.UseRouting();
 

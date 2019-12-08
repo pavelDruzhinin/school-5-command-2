@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using ChatsConstructor.WebApi.Models.Domains;
 using ChatsConstructor.WebApi.Dto;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using System.Web.Http.Description;
 
 namespace Application.Web.Controllers
 {
@@ -20,25 +22,30 @@ namespace Application.Web.Controllers
             _signInManager = signInManager;
         }
 
-
+        // compile with: -doc:ChatsConstructor.WebApi.xml 
         /// <summary>
         /// Регистрация нового пользователя
         /// </summary>
-        /// <remarks> 
-        /// POST **/Register**
-        /// {
-        ///   'Email' : test@test.ru,
-        ///   'Password' : password
-        /// }
-        ///</remarks>
-        /// <param name="model">Имя и почта пользователя </param>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Account/Register
+        ///     {
+        ///        "id": 1        
+        ///     }
+        ///
+        /// </remarks>
+        /// <parameters name="model">Имя и почта пользователя </parameters>
         /// <remarks></remarks>        
-        /// <response code='200'>Пользователь успешно зарегистрирован</response>
-        /// <response code='401'>Решистрация отклонена(?)</response>
+        /// <response code='201'>Пользователь успешно зарегистрирован</response>
+        /// <response code='400'>Решистрация отклонена(?)</response>
 
         [HttpPost]
         [Route("Register")]
-        public async Task<ActionResult> Register(RegisterDto model)
+        [ResponseType(typeof(RegisterDto))]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> Register([FromBody] RegisterDto model)
         {
             if (ModelState.IsValid)
             {
@@ -71,10 +78,22 @@ namespace Application.Web.Controllers
         /// <summary>
         /// Авторизация пользователя
         /// </summary>
-        /// <param name="model"></param>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Account/Login
+        ///     {
+        ///        "email": test@test.ru,
+        ///        "password": password",
+        ///        "rememberMe": true       
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="model">Пользователь</param>
         /// <response code='200'> Пользователь успешно авторизован</response>
         /// <response code='401'> Пользователь не прошел аутентификацию</response>
         [HttpPost]
+        [ResponseType(typeof(LoginDto))]
         [Route("Login")]
         public async Task<ActionResult> Login(LoginDto model)
         {
@@ -101,6 +120,16 @@ namespace Application.Web.Controllers
         /// <summary>
         /// Выход пользователя из учетной записи
         /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Account/Logout
+        ///     {
+        ///        "id": 1        
+        ///     }
+        ///
+        /// </remarks>
+        /// 
         ///<response code='200'></response>
         [HttpPost]
         [Route("Logout")]
@@ -113,6 +142,15 @@ namespace Application.Web.Controllers
         /// <summary>
         /// Нужен для возвращения состояния аккаунта на Фронтэнд
         /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /Account/Context
+        ///     {
+        ///        "id": 1        
+        ///     }
+        ///
+        /// </remarks>
         ///<response code='200'>Возврат Json с данными юзера или если он не залогинен</response>
         [HttpGet]
         [Route("Context")]

@@ -30,7 +30,10 @@ namespace Application.Web.Controllers
         /// Получение списка чатов
         /// </summary>
         /// <remarks>
-        /// GET /Chats
+        /// Sample request:
+        ///
+        ///     GET /Chats
+        ///     
         /// </remarks>
         /// <returns></returns>
         [HttpGet]
@@ -49,11 +52,14 @@ namespace Application.Web.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request:
+        ///
         ///     POST /Chats/Add
         ///     {
-        ///         "Name" : "Test chat"
+        ///        "id": 1
         ///     }
+        ///
         /// </remarks>
+        /// <typeparam name="Model"> </typeparam>
         /// <param name="Model"></param>
         /// <returns></returns>
         /// <response code='200'>Success</response>
