@@ -66,7 +66,7 @@ namespace BackEnd
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { 
                     Title = "Web API",
-                    Version = "v1"
+                    Version = "v1",
                 
                 });
 
