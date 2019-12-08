@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
  
 namespace ChatsConstructor.WebApi.Dto
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class RegisterDto
     {
         [Required]
