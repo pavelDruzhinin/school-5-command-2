@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ChatsConstructor.WebApi.Models;
 using ChatsConstructor.WebApi.Models.Domains;
+using ChatsConstructor.WebApi.Models.Domains.Enums;
 using ChatsConstructor.WebApi.Models.Hubs.Chat.Dto;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -131,12 +132,37 @@ namespace ChatsConstructor.WebApi.Hubs
             if (questionForAnswer == null)
                 return;
 
+            if(questionForAnswer.Q)
+
             // Добавляем ответ на вопрос в истории сессии
             questionForAnswer.AnswerUtcDateTime = DateTime.UtcNow;
             questionForAnswer.Text = dto.Answer;
 
             // Делаем запрос на обновление вопроса в истории сессии
             _db.ChatSessionAnswers.Update(questionForAnswer);
+
+            var questionType = _db.Questions.First(x => x.Id == dto.QuestionId).QuestionType;
+
+            switch (questionType)
+            {
+                // Если тип вопроса(на который ответили) является приветствием
+                case QuestionType.Welcome:
+
+                    // Ставим сессию в статус "в прогрессе"
+                    session.Status = SessionProgressType.InProgress;
+                    _db.ChatSessions.Update(session);
+
+                    break;
+
+                // Если тип вопроса(на который ответили) является завершающим
+                case QuestionType.Final:
+
+                    // Ставим сессию в статус "Завершено"
+                    session.Status = SessionProgressType.Completed;
+                    _db.ChatSessions.Update(session);
+
+                    break;
+            }
 
             // Получаем следующий вопрос
             var nextQuestion = GetNextQuestion(session.ChatId, dto.QuestionId);
