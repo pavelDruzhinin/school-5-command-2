@@ -132,8 +132,6 @@ namespace ChatsConstructor.WebApi.Hubs
             if (questionForAnswer == null)
                 return;
 
-            if(questionForAnswer.Q)
-
             // Добавляем ответ на вопрос в истории сессии
             questionForAnswer.AnswerUtcDateTime = DateTime.UtcNow;
             questionForAnswer.Text = dto.Answer;
