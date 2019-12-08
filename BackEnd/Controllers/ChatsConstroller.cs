@@ -8,12 +8,15 @@ using System;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using ChatsConstructor.WebApi.Models.Domains.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Web.Controllers
 {
+    [Produces("application/json")]
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
     public class ChatsController : Controller
     {
@@ -25,7 +28,16 @@ namespace Application.Web.Controllers
             _userManager = userManager;
             _db = db;
         }
-
+        /// <summary>
+        /// Получение списка чатов
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /Chats
+        ///     
+        /// </remarks>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Get ()
         {
