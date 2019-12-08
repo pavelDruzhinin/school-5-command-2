@@ -4,7 +4,7 @@
       <h1>Список чатов</h1>
       <ul>
 
-        <li v-for="(chat, index) in chats" v-bind:key="chat.id">
+        <li v-for="chat in chats" v-bind:key="chat.id">
           <div class="dflex justibetween">
           <div><h2>{{chat.name}}</h2></div>
           <div class="dflex  justifystart">
@@ -81,8 +81,8 @@ li {
 </style>
 
 <script>
-import plusButton from './components/plusButton.vue'
-import respondents from './components/respondents.vue'
+import plusButton from '@/components/plusButton.vue'
+import respondents from '@/components/respondents.vue'
 
 export default {
   components:{

@@ -18,8 +18,8 @@ const routes = [
     path: '/',
     name: 'Home',
     components: {
-      default: () => import('../views/Home.vue'),
-      navbar: () => import('../components/Navbar.vue')
+      default: () => import('@/views/Home.vue'),
+      navbar: () => import('@/components/Navbar.vue')
     }
   },
   {
@@ -28,25 +28,32 @@ const routes = [
     components: {
       default: () => import('../views/chat.vue'),
       navbar: () => import('../components/Navbar.vue')
-    } 
+    }, 
+    path:'/dashboard',
+    name:'Dashboard',
+    components:{
+      default: () => import('@/views/Dashboard.vue'),
+      navbar: () => import('@/components/Navbar.vue')
+    },
+    beforeEnter:ifNotAuth
   },
   {
     path: '/auth',
     beforeEnter:ifAuth,
     components: {
-      default: () => import('../views/Auth/Index.vue'),
-      navbar: () => import('../components/Navbar.vue')
+      default: () => import('@/views/Auth/Index.vue'),
+      navbar: () => import('@/components/Navbar.vue')
     },
     children: [
       {
         path: 'registration',
         name: 'Registration',
-        component: () => import('../views/Auth/Registration.vue')
+        component: () => import('@/views/Auth/Registration.vue')
       },
       {
         path: 'login',
         name: 'Login',
-        component: () => import('../views/Auth/Login.vue')
+        component: () => import('@/views/Auth/Login.vue')
       }
     ]
   }
