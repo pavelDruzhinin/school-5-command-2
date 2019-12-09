@@ -11,6 +11,7 @@ using ChatsConstructor.WebApi.Models.Domains.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChatsConstructor.WebApi.Controllers
 {
@@ -50,24 +51,19 @@ namespace ChatsConstructor.WebApi.Controllers
         public IActionResult Get(long ChatId)
         {
             var QuestionsList = _db.Questions
-                    .Where(x => x.ChatId == ChatId && x.DeleteUtcDateTime == null)
-                    .OrderBy(x => x.QueueNumber)
-                    .Select(x => new { x.Id, x.Text, x.QueueNumber }).ToList();
+                    .Include(q => q.Buttons)
+                    .Where(q => q.ChatId == ChatId && q.DeleteUtcDateTime == null)
+                    .OrderBy(q => q.QueueNumber)
+                    .Select(x => new { 
+                        Id = x.Id, 
+                        Text = x.Text, 
+                        QueueNumber = x.QueueNumber, 
+                        QuestionType = x.QuestionType.ToString(), 
+                        Buttons = x.Buttons.Select(b => new { b.Id, b.Text })
+                    })
+                    .ToList();
 
-            var QuestionsListResponse = new List<Object>() { };
-
-            foreach (var QuestionsListItem in QuestionsList)
-            {
-                QuestionsListResponse.Add(new
-                {
-                    Id = QuestionsListItem.Id,
-                    Text = QuestionsListItem.Text,
-                    QueueNumber = QuestionsListItem.QueueNumber,
-                    Buttons = _db.Buttons.Where(x => x.QuestionId == QuestionsListItem.Id).Select(x => new { x.Id, x.Text }).ToList()
-                });
-            }
-
-            return Ok(QuestionsListResponse);
+            return Ok(QuestionsList);
         }
         /// <summary>
         /// Создание нового чата
@@ -109,6 +105,7 @@ namespace ChatsConstructor.WebApi.Controllers
                             ChatId = ChatId,
                             Text = questionDto.Text,
                             QueueNumber = queueNumber++,
+                            QuestionType = (QuestionType)Enum.Parse(typeof(QuestionType), questionDto.QuestionType),
                             QuestionAnswerType = qt
                         };
 
@@ -118,6 +115,7 @@ namespace ChatsConstructor.WebApi.Controllers
                         
                         q.Text = questionDto.Text;
                         q.QueueNumber = queueNumber++;
+                        q.QuestionType = (QuestionType)Enum.Parse(typeof(QuestionType), questionDto.QuestionType);
                         q.QuestionAnswerType = qt;
 
                         _db.Questions.Update(q);
@@ -151,24 +149,19 @@ namespace ChatsConstructor.WebApi.Controllers
                 }
 
                 var QuestionsList = _db.Questions
-                    .Where(x => x.ChatId == ChatId && x.DeleteUtcDateTime == null)
-                    .OrderBy(x => x.QueueNumber)
-                    .Select(x => new { x.Id, x.Text, x.QueueNumber }).ToList();
+                    .Include(q => q.Buttons)
+                    .Where(q => q.ChatId == ChatId && q.DeleteUtcDateTime == null)
+                    .OrderBy(q => q.QueueNumber)
+                    .Select(x => new { 
+                        Id = x.Id, 
+                        Text = x.Text, 
+                        QueueNumber = x.QueueNumber, 
+                        QuestionType = x.QuestionType.ToString(), 
+                        Buttons = x.Buttons.Select(b => new { b.Id, b.Text })
+                    })
+                    .ToList();
 
-                var QuestionsListResponse = new List<Object>() { };
-
-                foreach (var QuestionsListItem in QuestionsList)
-                {
-                    QuestionsListResponse.Add(new
-                    {
-                        Id = QuestionsListItem.Id,
-                        Text = QuestionsListItem.Text,
-                        QueueNumber = QuestionsListItem.QueueNumber,
-                        Buttons = _db.Buttons.Where(x => x.QuestionId == QuestionsListItem.Id).Select(x => new { x.Id, x.Text }).ToList()
-                    });
-                }
-
-                return Ok(QuestionsListResponse);
+                return Ok(QuestionsList);
             }
             else
             {

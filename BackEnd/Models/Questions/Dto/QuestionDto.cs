@@ -10,5 +10,7 @@ namespace ChatsConstructor.WebApi.Dto
         public string Text { get; set; }
 
         public List<ButtonDto> Buttons { get; set; }
+
+        public string QuestionType { get; set; }
     }
 }
