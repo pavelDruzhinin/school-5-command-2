@@ -2,12 +2,12 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store'
 
-const ifAuth = (to,from,next) => {
-  if(store.getters.isAuthenticated) next('/')
+const ifAuth = (to, from, next) => {
+  if (store.getters.isAuthenticated) next('/')
   else next();
 }
 const ifNotAuth = (to, from, next) => {
-  if(!store.getters.isAuthenticated) next('/auth/login')
+  if (!store.getters.isAuthenticated) next('/auth/login')
   else next()
 }
 
@@ -28,18 +28,20 @@ const routes = [
     components: {
       default: () => import('../views/chat.vue'),
       navbar: () => import('../components/Navbar.vue')
-    }, 
-    path:'/dashboard',
-    name:'Dashboard',
-    components:{
+    }
+  }, 
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    components: {
       default: () => import('@/views/Dashboard.vue'),
       navbar: () => import('@/components/Navbar.vue')
     },
-    beforeEnter:ifNotAuth
+    beforeEnter: ifNotAuth
   },
   {
     path: '/auth',
-    beforeEnter:ifAuth,
+    beforeEnter: ifAuth,
     components: {
       default: () => import('../views/Auth/Index.vue'),
       navbar: () => import('../components/Navbar.vue')
