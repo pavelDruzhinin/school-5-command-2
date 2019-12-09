@@ -25,85 +25,85 @@
         ></b-form-input>
         <ValidatePassword :v="$v" />
       </b-form-group>
-      <b-form-checkbox
-      v-model="form.RememberMe"
-      >Remember Me</b-form-checkbox>
+      <b-form-checkbox class="mb-3" v-model="form.RememberMe">Remember Me</b-form-checkbox>
       <b-button type="submit" variant="primary">Log In</b-button>
     </b-form>
   </div>
 </template>
 
 <script>
-  import { validationMixin } from "vuelidate";
-  import {
-    required,
-    email,
-    minLength,
-    sameAs,
-    alpha
-  } from "vuelidate/lib/validators";
+import { validationMixin } from "vuelidate";
+import {
+  required,
+  email,
+  minLength,
+  sameAs,
+  alpha
+} from "vuelidate/lib/validators";
 
-  import ValidateEmail from "@/components/Validations/ValidateEmail.vue";
-  import ValidatePassword from "@/components/Validations/ValidatePassword.vue";
+import ValidateEmail from "@/components/Validations/ValidateEmail.vue";
+import ValidatePassword from "@/components/Validations/ValidatePassword.vue";
 
-  export default {
-      mixins: [validationMixin],
-      components:{
-          ValidateEmail,
-          ValidatePassword
+export default {
+  mixins: [validationMixin],
+  components: {
+    ValidateEmail,
+    ValidatePassword
+  },
+  data() {
+    return {
+      form: {
+        Email: "",
+        Password: "",
+        RememberMe: true
+      }
+    };
+  },
+  validations: {
+    form: {
+      Email: {
+        required,
+        email
       },
-      data() {
-      return {
-        form: {
-          Email: "",
-          Password: "",
-          RememberMe:true
-        }
-      };
-    },
-    validations:{
-        form: {
-        Email: {
-          required,
-          email
-        },
-        Password: {
-          required,
-          minLength: minLength(5)
-        }
+      Password: {
+        required,
+        minLength: minLength(5)
+      }
     }
-    },
-    methods:{
-        login() {
-        this.$v.$touch();
-        if(!this.$v.$invalid) this.$store.dispatch("login", this.form)
-                                  .then(response=>this.$router.push("/")); // здесь заменим ссылку на лк
-      },
+  },
+  methods: {
+    login() {
+      this.$v.$touch();
+      if (!this.$v.$invalid)
+        this.$store
+          .dispatch("login", this.form)
+          .then(response => this.$router.push("/")); // здесь заменим ссылку на лк
     }
-  };
+  }
+};
 </script>
 
 <style lang="scss">
-  .login {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    align-items: center;
-    justify-content: center;
-    &__form {
-      max-width: 480px;
-    }
+.login {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+  &__form {
+    max-width: 480px;
   }
-  .form-group {
+}
+.form-group {
+  .error {
+    display: none;
+    font-size: 20.4px;
+    color: rgba(4, 0, 255, 0.425);
+  }
+  &.errInput {
     .error {
-      display: none;
-      font-size: 20.4px;
-      color: rgba(4, 0, 255, 0.425);
-    }
-    &.errInput {
-      .error {
-        display: inline;
-      }
+      display: inline;
     }
   }
+}
 </style>
