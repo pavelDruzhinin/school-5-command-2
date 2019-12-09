@@ -31,7 +31,7 @@
             <label for="haveVariants">Варианты ответов</label>
 
             <div class="variants" v-if="checkBoxPush">
-              <button class="myBtn btnNarrow" @click="addRow()">Добавить варант ✚</button>
+              <button class="myBtn btnNarrow" @click="addRow()">Добавить вариант ✚</button>
               <div class="addVariantBlock">
                 <ul>
                   <li v-for="(input, index) in inputVariants" :key="index">
@@ -63,7 +63,7 @@
 
       <ul class="NumMarker">
         <draggable v-model="tasks">
-        <li class="questionText" v-for="(item,key, index) in tasks" :key="index" @dragend="logging">
+        <li class="questionText" v-for="(item,key, index) in tasks" :key="index">
           <div class="questionBlock">
             {{item.name}}
             <div class="btPanel">
@@ -78,17 +78,6 @@
         </li>
         </draggable>
       </ul>
-
-      <!--<div id="toDoList" class="toDoList" v-for="(item,key,   index) in tasks">
-			<p class="questionText" :class="item.status" v-on:click="changeStatus(item)">
-				{{item.name}}
-			</p>
-			<div id="variantsBlock" class="variantsBlock" v-for="(item) in item.variants">
-				<p class="variant" v-on:click="test()">
-					{{item}}
-				</p>
-			</div>
-      </div>-->
     </div>
 
     <div class="helloBlock">
@@ -96,7 +85,7 @@
       <textarea id="goodbye" class="goodbye" v-model="goodbyeText"></textarea>
     </div>
     <div class="buttons center">
-      <button class="myBtn">Сохранить</button>
+      <button class="myBtn" @click="addtoDb">Сохранить</button>
     </div>
   </div>
 </template>
@@ -108,41 +97,7 @@ import draggable from "vuedraggable"
     },
     data() {
       return {
-        userName: "Иванов Иван Иванович",
-        userTelephone: "+7 921 069 80 25",
-        userMail: "ivanov@mail.ru",
-        tasks: [
-          {
-            name: "Ваш год рождения?",
-            variants: [],
-            status: ""
-          },
-          {
-            name: "Какое у Вас образование?",
-            variants: ["высшее", "среднее-специальное", "полное общее"],
-            status: ""
-          },
-          {
-            name: "Какой у Вас опыт работы?",
-            variants: ["без опыта", "менее 3 лет", "3-5 лет", "более 5 лет"],
-            status: ""
-          },
-          {
-            name: "Вы согласны на командировки? Как часто?",
-            variants: ["нет", "да, если не часто", "да"],
-            status: ""
-          },
-          {
-            name: "Какой у Вас уровень владения ангилийским языком?",
-            variants: [
-              "не владею английским",
-              "владею на уровне чтения технической документации",
-              "хороший разговорный и письменный уровень"
-            ],
-            status: ""
-          }
-        ],
-        userImg: "cat.jpg",
+        tasks: [],
         newQuestionText: "",
         hellowText: "Здравствуйте!",
         goodbyeText: "Спасибо, что помогли нам. Мы с вами обязательно свяжемся.",
@@ -157,6 +112,11 @@ import draggable from "vuedraggable"
     methods: {
       logging(){
         console.log(this.tasks)
+      },
+      addtoDb(){
+        this.$http
+          .post('/questions/'+this.$route.params.id,this.tasks)
+          .then(this.$router.push('/dashboard'))
       },
       createNewTask: function() {
         if (!this.isEditIndex) {
@@ -234,7 +194,7 @@ import draggable from "vuedraggable"
     margin: 0;
     padding: 0;
   }
-  body {
+  .main {
     background-color: #d4e2e4;
   }
   .header {

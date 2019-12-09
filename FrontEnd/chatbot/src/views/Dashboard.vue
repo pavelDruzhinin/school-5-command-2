@@ -19,12 +19,12 @@
       </ul>
     </div>
     <div id="plusButton" class="justifycenter dflex">
-      <plusButton/>
+      <plusButton @click="openmodal" />
     </div>
-
     <div id="respondents">
       <respondents/>
     </div>
+    <ModalChat @click="addchat" :chat="chat"/>
   </main>
 </template>
 
@@ -83,24 +83,36 @@ li {
 <script>
 import plusButton from '@/components/plusButton.vue'
 import respondents from '@/components/respondents.vue'
+import ModalChat from '@/components/ModalChat'
 
 export default {
   components:{
     plusButton,
-    respondents
+    respondents,
+    ModalChat
   },
   data() {
     return {
       chats: [
         {id:0, name: 'Чат номер 1'},
         {id:1, name: 'Чат номер 2'}
-      ]
+      ],
+      chat:{Name:''}
     }
   },
   methods: {
     removeId: function(id) {
       let chats = this.chats;
       this.chats = chats.filter((chat) => chat.id != id);
+    },
+    openmodal(){
+      this.$bvModal.show("modal1")
+    },
+    addchat(){
+      this.$http.post('/chats/add',this.chat).then(response=>{
+        let chatdata = response.data;
+        this.$router.push('/edit/'+chatdata.id)
+      })
     }
   }
   }
