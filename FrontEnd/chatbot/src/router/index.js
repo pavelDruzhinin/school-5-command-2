@@ -29,7 +29,16 @@ const routes = [
       default: () => import('../views/chat.vue'),
       navbar: () => import('../components/Navbar.vue')
     }
-  }, 
+  },
+  {
+    path: '/edit/:id',
+    name: 'edit',
+    components: {
+      default: () => import('@/views/questionList.vue'),
+      navbar: () => import('@/components/Navbar.vue')
+    },
+    // beforeEnter:ifAuth
+  },
   {
     path: '/dashboard',
     name: 'Dashboard',
@@ -58,6 +67,10 @@ const routes = [
         component: () => import('../views/Auth/Login.vue')
       }
     ]
+  },
+  {
+    path:'*',
+    redirect:'/'
   }
 ]
 
