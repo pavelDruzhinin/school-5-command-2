@@ -181,7 +181,6 @@ export default {
                   status: ""
                 }
               ],
-              userImg: "cat.jpg",
               newQuestionText: "",
               hellowText: "Здравствуйте!",
               goodbyeText:
