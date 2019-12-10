@@ -83,13 +83,13 @@ namespace ChatsConstructor.WebApi.Controllers
         [HttpPost]
         [ResponseType(typeof(QuestionsDto))]
         [Route("{ChatId}")]
-        public IActionResult Add(long ChatId, QuestionsDto Model)
+        public IActionResult Add(long ChatId, List<QuestionDto> Model)
         {
             if (ModelState.IsValid)
             {
                 short queueNumber = 0;
 
-                foreach (QuestionDto questionDto in Model.Questions)
+                foreach (QuestionDto questionDto in Model)
                 {   
                     Question q;
                     QuestionAnswerType qt;
