@@ -8,12 +8,12 @@
     <div class="list">
       <p>Список вопросов:</p>
 
-      <button class="myBtn" @click="changeVisible()">Добавить ✚</button>
+      <button  type="button" class="btn btn-primary" @click="changeVisible()">Добавить ✚</button>
 
       <div class="customModal" v-if="showModalQwestion">
         <div class="customModalTitle">
           Добавление вопроса
-          <button class="myBtn closeBtn" @click="closeCustomModal()">&times;</button>
+          <button  type="button" class="btn btn-primary" @click="closeCustomModal()">&times;</button>
         </div>
         <div class="customModalBody">
           <div class="newQuestion">
@@ -31,7 +31,7 @@
             <label for="haveVariants">Варианты ответов</label>
 
             <div class="variants" v-if="checkBoxPush">
-              <button class="myBtn btnNarrow" @click="addRow()">Добавить вариант ✚</button>
+              <button  type="button" class="btn btn-primary" @click="addRow()">Добавить вариант ✚</button>
               <div class="addVariantBlock">
                 <ul>
                   <li v-for="(input, index) in inputVariants" :key="index">
@@ -43,7 +43,8 @@
                         v-model="inputVariants[index]"
                       />
                       <button
-                        class="myBtn deleteBtn"
+                         type="button" 
+                         class="btn btn-primary"
                         @click="deleteInputVariant(index)"
                       >Удалить &times;</button>
                     </div>
@@ -56,7 +57,7 @@
 
         <div class="customModalFooter">
           <div class="margin">
-            <button class="myBtn" v-on:click="createNewTask()">Сохранить</button>
+            <button  type="button" class="btn btn-primary" v-on:click="createNewTask()">Сохранить</button>
           </div>
         </div>
       </div>
@@ -67,8 +68,8 @@
           <div class="questionBlock">
             {{item.name}}
             <div class="btPanel">
-              <button class="myBtn btnLittleNarrow" @click="EditQuestion(item,key)">Редактировать ✎</button>
-              <button class="myBtn btnLittleDelete" @click="DeleteQuestion(key)">Удалить &times;</button>
+              <button  type="button" class="btn btn-primary" @click="EditQuestion(item,key)">Редактировать ✎</button>
+              <button  type="button" class="btn btn-primary" @click="DeleteQuestion(key)">Удалить &times;</button>
             </div>
           </div>
 
@@ -85,7 +86,7 @@
       <textarea id="goodbye" class="goodbye" v-model="goodbyeText"></textarea>
     </div>
     <div class="buttons center">
-      <button class="myBtn" @click="addtoDb">Сохранить</button>
+      <button  type="button" class="btn btn-primary" @click="addtoDb">Сохранить</button>
     </div>
   </div>
 </template>

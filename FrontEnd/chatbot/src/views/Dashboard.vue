@@ -9,8 +9,9 @@
           <div><h2>{{chat.name}}</h2></div>
           <div class="dflex  justifystart">
             
-            <button class="button editChat">Редактировать</button>
-            <button class="button deleteChat" @click="removeId(chat.id)">X</button>
+            <button type="button" class="btn btn-primary">Редактировать</button>
+            <button type="button" class="btn btn-primary"  @click="removeId(chat.id)">X</button>
+
           </div>
           </div>
           <hr>

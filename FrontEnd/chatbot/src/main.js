@@ -16,9 +16,9 @@ Vue.prototype.$http = axios
 Vue.use(BootstrapVue);
 
 
-store.dispatch('restoreContext').then(()=>
+//store.dispatch('restoreContext').then(()=>
 new Vue({
   router,
   store,
   render: h => h(App)
-}).$mount('#app'))
+}).$mount('#app')//)

@@ -2,7 +2,7 @@
     <div id="plusButton">
         <div class="dflex justibetween">
             <h1>Список респондентов</h1>
-            <button class="button" id="userAddButton">
+            <button  type="button" class="btn btn-primary" id="userAddButton">
                 +
             </button>
         </div>
@@ -13,11 +13,11 @@
                     <h2>{{respondent.name}}</h2>
                     <div class="dflex justifystart">
 
-                      <button class="button seeUser">
+                      <button  type="button" class="btn btn-primary">
                         Посмотреть результаты
                       </button>
 
-                      <button class="button seeUser">
+                      <button  type="button" class="btn btn-primary">
                         Открыть профиль
                       </button>
                     </div>
