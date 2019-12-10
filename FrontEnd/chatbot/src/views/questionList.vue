@@ -1,12 +1,8 @@
  <template>
   <div class="main">
-    <div class="helloBlock">
-      <span>Приветствие:</span>
-      <textarea id="hellow" class="hellow" v-model="hellowText"></textarea>
-    </div>
-
     <div class="list">
       <p>Список вопросов:</p>
+<<<<<<< HEAD
 
       <button  type="button" class="btn btn-primary" @click="changeVisible()">Добавить ✚</button>
 
@@ -87,106 +83,92 @@
     </div>
     <div class="buttons center">
       <button  type="button" class="btn btn-primary" @click="addtoDb">Сохранить</button>
+=======
+      <questionstable 
+      :questions="questions"
+      @edit="edit"
+      @del="deletequestion"
+      />
+      <b-button @click="create">Добавить ✚</b-button>
+      <question 
+      @addvariant="addvariant" 
+      @deletevariant="deletevariant" 
+      @savequestion="save"
+      :question="question" />
+      <button class="myBtn" @click="addtoDb">Сохранить</button>
+>>>>>>> questionlist changes, break view on components
     </div>
   </div>
 </template>
 <script>
-import draggable from "vuedraggable"
+import question from '@/components/views/questionlist/questionModal.vue'
+import questionstable from '@/components/views/questionlist/questionsTable.vue'
   export default {
     components:{
-      draggable
+      question,
+      questionstable
     },
     data() {
       return {
-        tasks: [],
-        newQuestionText: "",
-        hellowText: "Здравствуйте!",
-        goodbyeText: "Спасибо, что помогли нам. Мы с вами обязательно свяжемся.",
-        showModalQwestion: false,
-        checkBoxPush: false,
-        inputVariants: [],
-        editKey: "",
-        editIndex: "",
-        isEditIndex: false
+        questions:[],
+        questionclone:Object,
+        question:{
+          text:'',
+          buttons:[],
+          questiontype:[
+            {value:null, text:'Выберите тип'}, 
+            {value:'Welcome', text:'Приветствие'}, 
+            {value:'Normal', text:'Обычный вопрос'},
+            {value:'Final', text:'Завершающий диалог'}
+            ],
+          type:false,
+          selected:null
+        }
       };
     },
     methods: {
-      logging(){
-        console.log(this.tasks)
+      create(){
+        this.resetmodal();
+        this.$bvModal.show("modal")
+      },
+      resetmodal(){
+        this.question.text='';
+        this.question.buttons=[];
+        this.question.type=false;
+        this.question.selected=null;
+      },
+      deletevariant(index){
+        this.question.buttons.splice(index,1)
+      },
+      deletequestion(index){
+        this.questions.splice(index,1)
+      },
+      addvariant(){
+        this.question.buttons.push({text:''})
+      },
+      save(){
+        let questiontext = this.question.text;
+        let questionbuttons = this.question.buttons
+        let questiontype = this.question.selected
+        if(questionbuttons.length) 
+          {
+            this.questions.push({text:questiontext,buttons:questionbuttons,questiontype:questiontype})
+            return true
+          }
+          else {this.questions.push({text:questiontext,questiontype:questiontype}); return true}
+      },
+      edit(question){
+        this.$bvModal.show("modal");
+        if(question.id) this.question.id=question.id;
+        this.question.text=question.text;
+        this.question.selected=question.questiontype;
+        if(question.buttons!==null) {this.question.buttons=question.buttons; this.question.type=true} 
       },
       addtoDb(){
         this.$http
-          .post('/questions/'+this.$route.params.id,this.tasks)
+          .post('/questions/'+this.$route.params.id,this.questions)
           .then(this.$router.push('/dashboard'))
       },
-      createNewTask: function() {
-        if (!this.isEditIndex) {
-          let obj = {};
-          obj.name = this.newQuestionText;
-          obj.variants = this.inputVariants;
-          obj.status = "";
-          this.tasks.push(obj);
-
-          /*question.value = "";
-  				this.newQuestionText = "";
-  				this.showModalQwestion = false;
-  				this.checkBoxPush = false;
-  				this.inputVariants = [];*/
-        } else {
-          /*this.tasks[this.editKey]=this.editIndex;*/
-          this.tasks[this.editKey].name = this.newQuestionText;
-          this.editKey = "";
-          this.editIndex = "";
-          this.isEditIndex = false;
-        }
-
-        question.value = "";
-        this.newQuestionText = "";
-        this.showModalQwestion = false;
-        this.checkBoxPush = false;
-        this.inputVariants = [];
-      },
-      deleteList: function() {
-        this.tasks = [];
-      },
-      changeStatus: function(item) {
-        item.status == "done" ? (item.status = "") : (item.status = "done");
-      },
-      test: function() {
-        alert("тест");
-      },
-      changeVisible: function() {
-        this.showModalQwestion = true;
-      },
-      closeCustomModal: function() {
-        this.showModalQwestion = false;
-        question.value = "";
-        this.newQuestionText = "";
-        (this.checkBoxPush = false), (this.inputVariants = []);
-      },
-      addRow: function() {
-        this.inputVariants.push("");
-      },
-      deleteInputVariant: function(index) {
-        this.inputVariants.splice(index, 1);
-      },
-      changeCheckboxStatus: function() {
-        this.checkBoxPush = !this.checkBoxPush;
-        this.inputVariants = [];
-      },
-      /*EditQuestion: function(index,key){*/
-      EditQuestion: function(index, key) {
-        this.showModalQwestion = true;
-        this.newQuestionText = index.name;
-        this.checkBoxPush = true;
-        this.inputVariants = index.variants;
-        this.editIndex = index;
-        this.editKey = key;
-        this.isEditIndex = true;
-      },
-      DeleteQuestion: function(index) {
-        this.tasks.splice(index, 1);
-      }
     }
   };
 </script>
@@ -293,7 +275,7 @@ import draggable from "vuedraggable"
 
   .myBtn:hover {
     filter: drop-shadow(0 0 10px #4d8496) saturate(200%);
-    cursor: pointer;
+    // cursor: pointer;
   }
   .litleBtn {
     width: 50px;
@@ -330,7 +312,7 @@ import draggable from "vuedraggable"
     font-weight: bold;
   }
   ul li.questionText:hover {
-    cursor: pointer;
+    // cursor: pointer;
     filter: drop-shadow(0 0 10px #4d8496);
   }
   ul li.variantTex {
