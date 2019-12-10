@@ -2,88 +2,6 @@
   <div class="main">
     <div class="list">
       <p>Список вопросов:</p>
-<<<<<<< HEAD
-
-      <button  type="button" class="btn btn-primary" @click="changeVisible()">Добавить ✚</button>
-
-      <div class="customModal" v-if="showModalQwestion">
-        <div class="customModalTitle">
-          Добавление вопроса
-          <button  type="button" class="btn btn-primary" @click="closeCustomModal()">&times;</button>
-        </div>
-        <div class="customModalBody">
-          <div class="newQuestion">
-            <span>Ваш вопрос:</span>
-            <textarea id="question" class="question" v-model="newQuestionText"></textarea>
-          </div>
-          <div class="newVariantsBlock margin">
-            <input
-              type="checkbox"
-              id="haveVariants"
-              @click="changeCheckboxStatus()"
-              v-model="checkBoxPush"
-            />
-
-            <label for="haveVariants">Варианты ответов</label>
-
-            <div class="variants" v-if="checkBoxPush">
-              <button  type="button" class="btn btn-primary" @click="addRow()">Добавить вариант ✚</button>
-              <div class="addVariantBlock">
-                <ul>
-                  <li v-for="(input, index) in inputVariants" :key="index">
-                    <div class="dFlexRow">
-                      <input
-                        type="text"
-                        id="variantText"
-                        class="variantText"
-                        v-model="inputVariants[index]"
-                      />
-                      <button
-                         type="button" 
-                         class="btn btn-primary"
-                        @click="deleteInputVariant(index)"
-                      >Удалить &times;</button>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="customModalFooter">
-          <div class="margin">
-            <button  type="button" class="btn btn-primary" v-on:click="createNewTask()">Сохранить</button>
-          </div>
-        </div>
-      </div>
-
-      <ul class="NumMarker">
-        <draggable v-model="tasks">
-        <li class="questionText" v-for="(item,key, index) in tasks" :key="index">
-          <div class="questionBlock">
-            {{item.name}}
-            <div class="btPanel">
-              <button  type="button" class="btn btn-primary" @click="EditQuestion(item,key)">Редактировать ✎</button>
-              <button  type="button" class="btn btn-primary" @click="DeleteQuestion(key)">Удалить &times;</button>
-            </div>
-          </div>
-
-          <ul class="circleMarker">
-            <li v-for="(item) in item.variants" class="variantTex" :key="item">{{item}}</li>
-          </ul>
-        </li>
-        </draggable>
-      </ul>
-    </div>
-
-    <div class="helloBlock">
-      <span>Прощание:</span>
-      <textarea id="goodbye" class="goodbye" v-model="goodbyeText"></textarea>
-    </div>
-    <div class="buttons center">
-      <button  type="button" class="btn btn-primary" @click="addtoDb">Сохранить</button>
-=======
       <questionstable 
       :questions="questions"
       @edit="edit"
@@ -96,7 +14,6 @@
       @savequestion="save"
       :question="question" />
       <button class="myBtn" @click="addtoDb">Сохранить</button>
->>>>>>> questionlist changes, break view on components
     </div>
   </div>
 </template>
