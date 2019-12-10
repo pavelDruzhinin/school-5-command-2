@@ -83,13 +83,13 @@ namespace ChatsConstructor.WebApi.Controllers
         [HttpPost]
         [ResponseType(typeof(QuestionsDto))]
         [Route("{ChatId}")]
-        public IActionResult Add(long ChatId, List<QuestionDto> Model)
+        public IActionResult Add(long ChatId, QuestionsDto Model)
         {
             if (ModelState.IsValid)
             {
                 short queueNumber = 0;
 
-                foreach (QuestionDto questionDto in Model)
+                foreach (QuestionDto questionDto in Model.Questions)
                 {   
                     Question q;
                     QuestionAnswerType qt;
@@ -146,6 +146,20 @@ namespace ChatsConstructor.WebApi.Controllers
                             _db.SaveChanges();
                         }
                     }
+                }
+
+                if (Model.RemoveQuestions != null) {
+                    var removeQuestions = _db.Questions
+                        .Where(q => Enumerable.Contains(Model.RemoveQuestions, q.Id))
+                        .ToList();
+
+                    foreach(var rq in removeQuestions)
+                    {
+                        rq.DeleteUtcDateTime = DateTime.Now;
+                        _db.Questions.Update(rq);
+                    }
+
+                    _db.SaveChanges();
                 }
 
                 var QuestionsList = _db.Questions
