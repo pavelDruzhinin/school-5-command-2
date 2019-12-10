@@ -10,10 +10,23 @@
 </template>
 
 <style lang="scss">
+  #main {
+    height: 100%;
+    width: 100%;
+    background-image: url(./assets/back.jpg);
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-attachment: fixed;
+    background-size: cover;
+    
+
+  }
   .layout {
+    
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background: #f9f8f8;
     &__content {
       display: flex;
       flex-direction: column;
@@ -24,10 +37,6 @@
 </style>
 
 <script>
-import Navbar from './components/Navbar.vue'
 export default {
-  components:{
-    Navbar
-  }
 }
 </script>

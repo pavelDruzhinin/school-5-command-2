@@ -43,8 +43,18 @@ namespace ChatsConstructor.WebApi.Models.Domains
         public QuestionType QuestionType { get; set; }
 
         /// <summary>
+        /// Тип возможности ответа на вопрос
+        /// </summary>
+        public QuestionAnswerType QuestionAnswerType { get; set; }
+
+        /// <summary>
         /// Ответы на этот вопрос
         /// </summary>
         public List<ChatSessionAnswer> ChatSessionAnswers { get; set; }
+
+        /// <summary>
+        /// Кнопки вопроса
+        /// </summary>
+        public List<Button> Buttons { get; set; }
     }
 }

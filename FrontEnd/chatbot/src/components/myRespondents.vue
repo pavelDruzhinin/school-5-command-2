@@ -2,7 +2,7 @@
     <div id="respondents"  class="list">
       
       <p>Список респондентов:</p>
-      <button class="myBtn">
+      <button  type="button" class="btn btn-primary">
             ✚
       </button>
 
@@ -13,8 +13,8 @@
           <div>{{respondent.name}}</div>
           <div class="dflex  justifystart">
             
-            <button class="myBtn btnLook">Просмотреть результаты 🔍</button>
-            <button class="myBtn btnLittleDelete" @click="removeId(chat.id)">Открыть профиль 🙎 </button>
+            <button  type="button" class="btn btn-primary">Просмотреть результаты 🔍</button>
+            <button  type="button" class="btn btn-primary" @click="removeId(chat.id)">Открыть профиль 🙎 </button>
           </div>
           </div>
           <hr>

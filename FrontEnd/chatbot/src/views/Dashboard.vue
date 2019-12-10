@@ -4,13 +4,14 @@
       <h1>Список чатов</h1>
       <ul>
 
-        <li v-for="(chat, index) in chats" v-bind:key="chat.id">
+        <li v-for="chat in chats" v-bind:key="chat.id">
           <div class="dflex justibetween">
           <div><h2>{{chat.name}}</h2></div>
           <div class="dflex  justifystart">
             
-            <button class="button editChat">Редактировать</button>
-            <button class="button deleteChat" @click="removeId(chat.id)">X</button>
+            <button type="button" class="btn btn-primary">Редактировать</button>
+            <button type="button" class="btn btn-primary"  @click="removeId(chat.id)">X</button>
+
           </div>
           </div>
           <hr>
@@ -19,12 +20,12 @@
       </ul>
     </div>
     <div id="plusButton" class="justifycenter dflex">
-      <plusButton/>
+      <plusButton @click="openmodal" />
     </div>
-
     <div id="respondents">
       <respondents/>
     </div>
+    <ModalChat @click="addchat" :chat="chat"/>
   </main>
 </template>
 
@@ -81,26 +82,38 @@ li {
 </style>
 
 <script>
-import plusButton from './components/plusButton.vue'
-import respondents from './components/respondents.vue'
+import plusButton from '@/components/plusButton.vue'
+import respondents from '@/components/respondents.vue'
+import ModalChat from '@/components/ModalChat'
 
 export default {
   components:{
     plusButton,
-    respondents
+    respondents,
+    ModalChat
   },
   data() {
     return {
       chats: [
         {id:0, name: 'Чат номер 1'},
         {id:1, name: 'Чат номер 2'}
-      ]
+      ],
+      chat:{Name:''}
     }
   },
   methods: {
     removeId: function(id) {
       let chats = this.chats;
       this.chats = chats.filter((chat) => chat.id != id);
+    },
+    openmodal(){
+      this.$bvModal.show("modal1")
+    },
+    addchat(){
+      this.$http.post('/chats/add',this.chat).then(response=>{
+        let chatdata = response.data;
+        this.$router.push('/edit/'+chatdata.id)
+      })
     }
   }
   }

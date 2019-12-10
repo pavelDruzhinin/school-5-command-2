@@ -55,18 +55,12 @@ namespace ChatsConstructor.WebApi.Migrations
                     b.Property<DateTime?>("DeleteUtcDateTime")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("FinalText")
-                        .HasColumnType("text");
-
                     b.Property<string>("Name")
                         .HasColumnType("character varying(200)")
                         .HasMaxLength(200);
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("WelcomeText")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -82,7 +76,7 @@ namespace ChatsConstructor.WebApi.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<long?>("ChatId")
+                    b.Property<long>("ChatId")
                         .HasColumnType("bigint");
 
                     b.Property<byte>("Status")
@@ -107,7 +101,7 @@ namespace ChatsConstructor.WebApi.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTime>("AnswerUtcDateTime")
+                    b.Property<DateTime?>("AnswerUtcDateTime")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("DeleteUtcDateTime")
@@ -143,6 +137,9 @@ namespace ChatsConstructor.WebApi.Migrations
 
                     b.Property<DateTime?>("DeleteUtcDateTime")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<byte>("QuestionAnswerType")
+                        .HasColumnType("smallint");
 
                     b.Property<byte>("QuestionType")
                         .HasColumnType("smallint");
@@ -365,7 +362,7 @@ namespace ChatsConstructor.WebApi.Migrations
             modelBuilder.Entity("ChatsConstructor.WebApi.Models.Domains.Button", b =>
                 {
                     b.HasOne("ChatsConstructor.WebApi.Models.Domains.Question", "Question")
-                        .WithMany()
+                        .WithMany("Buttons")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -384,7 +381,9 @@ namespace ChatsConstructor.WebApi.Migrations
                 {
                     b.HasOne("ChatsConstructor.WebApi.Models.Domains.Chat", "Chat")
                         .WithMany("Sessions")
-                        .HasForeignKey("ChatId");
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ChatsConstructor.WebApi.Models.Domains.User", "User")
                         .WithMany("Sessions")

@@ -1,67 +1,84 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import store from '@/store'
 
-Vue.use(VueRouter);
+const ifAuth = (to, from, next) => {
+  if (store.getters.isAuthenticated) next('/')
+  else next();
+}
+const ifNotAuth = (to, from, next) => {
+  if (!store.getters.isAuthenticated) next('/auth/login')
+  else next()
+}
+
+Vue.use(VueRouter)
 
 const routes = [
   {
-    path: "/",
-    name: "Home",
+    path: '/',
+    name: 'Home',
     components: {
-      default: () => import("../views/Home.vue"),
-      navbar: () => import("../components/Navbar.vue")
+      default: () => import('../views/Home.vue'),
+      navbar: () => import('../components/Navbar.vue')
     }
   },
   {
-    path: "/auth",
+    path: '/chat',
+    name: 'chat',
     components: {
-      default: () => import("../views/Auth/Index.vue"),
-      navbar: () => import("../components/Navbar.vue")
+      default: () => import('../views/chat.vue'),
+      navbar: () => import('../components/Navbar.vue')
+    }
+  },
+  {
+    path: '/edit/:id',
+    name: 'edit',
+    components: {
+      default: () => import('@/views/questionList.vue'),
+      navbar: () => import('@/components/Navbar.vue')
+    },
+    // beforeEnter:ifAuth
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    components: {
+      default: () => import('@/views/Dashboard.vue'),
+      navbar: () => import('@/components/Navbar.vue')
+    },
+    beforeEnter: ifNotAuth
+  },
+  {
+    path: '/auth',
+    beforeEnter: ifAuth,
+    components: {
+      default: () => import('../views/Auth/Index.vue'),
+      navbar: () => import('../components/Navbar.vue')
     },
     children: [
       {
-        path: "registration",
-        name: "Registration",
-        component: () => import("../views/Auth/Registration.vue")
+        path: 'registration',
+        name: 'Registration',
+        component: () => import('../views/Auth/Registration.vue')
       },
       {
-        path: "login",
-        name: "Login",
-        component: () => import("../views/Auth/Login.vue")
+        path: 'login',
+        name: 'Login',
+        component: () => import('../views/Auth/Login.vue')
       }
     ]
   },
   {
-    path: "/chatsList",
-    name: "chatsList",
-    components: {
-      default: () => import("../chatsList.vue"),
-      navbar: () => import("../components/Navbar.vue")
-    }
-  },
-  {
-    path: "/myChatList",
-    name: "myChatList",
-    components: {
-      default: () => import("../myChatList.vue"),
-      navbar: () => import("../components/Navbar.vue")
-    }
-  },
-  {
-    path: "/questionlist",
-    name: "questionList",
-    components: {
-      default: () => import("../views/questionList.vue"),
-      navbar: () => import("../components/Navbar.vue")
-    }
+    path:'*',
+    redirect:'/'
   }
-];
+]
 
 const router = new VueRouter({
-  mode: "history",
+  mode: 'history',
   base: process.env.BASE_URL,
   routes,
   linkExactActiveClass: "active"
-});
+})
 
-export default router;
+export default router

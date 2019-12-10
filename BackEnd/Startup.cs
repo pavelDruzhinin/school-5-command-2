@@ -1,6 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
+using ChatsConstructor.WebApi.Hubs;
 using ChatsConstructor.WebApi.Models;
 using ChatsConstructor.WebApi.Models.Domains;
+using ChatsConstructor.WebApi.Models.Mapping;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +17,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.IO;
+using System.Threading.Tasks;
+using SwaggerSettings = ChatsConstructor.WebApi.Settings.SwaggerSettings;
+using System.Xml.XPath;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Web.Http;
 
 namespace BackEnd
 {
@@ -29,6 +40,11 @@ namespace BackEnd
             services.AddDbContext<ChatsConstructorContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
             services.AddIdentity<User, IdentityRole<Guid>>(opts => {
                 opts.Password.RequiredLength = 5;   // минимальная длина
                 opts.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
@@ -37,22 +53,30 @@ namespace BackEnd
                 opts.Password.RequireDigit = false; // требуются ли цифры
             })
             .AddEntityFrameworkStores<ChatsConstructorContext>();
+            services.ConfigureApplicationCookie(c=>{
+                c.Events.OnRedirectToLogin = context=>{
+                    context.Response.StatusCode = 401;
+                    return Task.CompletedTask;
+                };
+            });
 
+            services.AddSignalR();
             services.AddControllers();
-            //1 шаг - регистрируем swagger и настраиваем
-            // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { 
                     Title = "Web API",
                     Version = "v1",
-                    Description = "Chats constructor Web API"
                 
                 });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
+                //var comments = new XPathDocument(xmlPath);
+                //c.OperationFilter<XmlCommentsOperationFilter>(comments);
+                //c.SchemaFilter<XmlCommentsSchemaFilter>(comments);
+
 
             });
         }
@@ -69,21 +93,32 @@ namespace BackEnd
             }
 
             //app.UseHttpsRedirection();
+            var config = new HttpConfiguration();
+            var xmlFormatter = config.Formatters.XmlFormatter;
+
+            // Starts using XmlSerialiser rather than DataContractSerializer.
+            xmlFormatter.UseXmlSerializer = true;
 
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
-            // Enable middleware to serve swagger-ui(HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
+            var swaggerSettings = new SwaggerSettings();
+            Configuration.GetSection(nameof(swaggerSettings)).Bind(swaggerSettings);
+            app.UseSwagger(option =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Chats constructor Web API");
-                c.RoutePrefix = string.Empty;
+                option.RouteTemplate = swaggerSettings.JsonRoute;
+            });
+            app.UseSwaggerUI(option =>
+            {
+                option.SwaggerEndpoint(swaggerSettings.UiEndpoint, swaggerSettings.Description);
+                option.RoutePrefix = "WebApi/swagger";
             });
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<ChatHub>("/chat");
+
                 endpoints.MapControllers();
             });
         }

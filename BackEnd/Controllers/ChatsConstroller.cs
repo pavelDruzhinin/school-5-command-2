@@ -8,10 +8,15 @@ using System;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using ChatsConstructor.WebApi.Models.Domains.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Web.Controllers
 {
+    [Produces("application/json")]
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
     public class ChatsController : Controller
     {
@@ -23,7 +28,16 @@ namespace Application.Web.Controllers
             _userManager = userManager;
             _db = db;
         }
-
+        /// <summary>
+        /// Получение списка чатов
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /Chats
+        ///     
+        /// </remarks>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Get ()
         {
@@ -34,6 +48,50 @@ namespace Application.Web.Controllers
                 .Select(x => new { x.Id, x.Name, x.CreateUtcDateTime }).ToList();
 
             return Ok(chatsList);
+        }
+
+        /// <summary>
+        /// Получение сессии при заходе по ссылке в чат
+        /// </summary>
+        /// <param name="chatId">Идентификатор чата</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{chatId:long}")]
+        public async Task<IActionResult> GetSession(long chatId)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (user == null)
+                return BadRequest();
+
+            var notCompletedSession = user.Sessions.FirstOrDefault(x => x.ChatId == chatId && !x.IsCompleted);
+
+            if (notCompletedSession != null)
+            {
+                return Json(new { SessionId = notCompletedSession.Id });
+            }
+
+            var createdSession = new ChatSession()
+            {
+                ChatId = chatId,
+                Status = SessionProgressType.NotStarted,
+                UserId = user.Id
+            };
+
+            _db.ChatSessions.Add(createdSession);
+            _db.SaveChanges();
+
+            var welcomeQuestion = _db.Questions.FirstOrDefault(x => x.ChatId == chatId && x.QuestionType == QuestionType.Welcome);
+
+            _db.ChatSessionAnswers.Add(new ChatSessionAnswer()
+            {
+                SessionId = createdSession.Id,
+                QuestionId = welcomeQuestion.Id,
+            });
+
+            _db.SaveChanges();
+
+            return Json(new { SessionId = createdSession.Id });
         }
 
         [HttpPost]

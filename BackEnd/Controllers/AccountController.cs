@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using ChatsConstructor.WebApi.Models.Domains;
 using ChatsConstructor.WebApi.Dto;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using System.Web.Http.Description;
 
 namespace Application.Web.Controllers
 {
@@ -19,54 +22,80 @@ namespace Application.Web.Controllers
             _signInManager = signInManager;
         }
 
-        //remarks описание метода
-        //GET /GetUser
-        //  {
-        //    "id":1
-        //}
-
+        // compile with: -doc:ChatsConstructor.WebApi.xml 
         /// <summary>
         /// Регистрация нового пользователя
         /// </summary>
-        /// <param name="model">Имя и почта пользователя </param>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Account/Register
+        ///     {
+        ///        "id": 1        
+        ///     }
+        ///
+        /// </remarks>
+        /// <parameters name="model">Имя и почта пользователя </parameters>
         /// <remarks></remarks>        
-        /// <response code='200'>Пользователь успешно зарегистрирован</response>
-        /// <response code='401'>Решистрация отклонена(?)</response>
+        /// <response code='201'>Пользователь успешно зарегистрирован</response>
+        /// <response code='400'>Решистрация отклонена(?)</response>
+
         [HttpPost]
         [Route("Register")]
-        public async Task<string> Register (RegisterDto model)
+        [ResponseType(typeof(RegisterDto))]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> Register([FromBody] RegisterDto model)
         {
             if (ModelState.IsValid)
             {
-                User user = new User { Email = model.Email, UserName = model.Email };
+                var exist = await _userManager.FindByEmailAsync(model.Email);
+                if(exist!=null) return BadRequest("User with this Email is Exists");
+                User user = new User { Email = model.Email, UserName = model.Email, FirstName = model.FirstName, LastName = model.LastName, MiddleName = model.MiddleName };
                 // добавляем пользователя
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     // установка куки
                     await _signInManager.SignInAsync(user, false);
-                    return "{ error: 0, msg: \"Successful Registration\" }";
+                    return Json(new
+                    {
+                        email = model.Email,
+                        fullname = model.FirstName + " " + model.MiddleName + " " + model.LastName
+                    });
                 }
                 else
                 {
                     foreach (var error in result.Errors)
                     {
-                        //ModelState.AddModelError(string.Empty, error.Description);
-                        return "{ error: 2, msg: \"Wrong Data\" }";
+                        return Unauthorized(error.Description);
                     }
                 }
             }
-            return "{ error: 1, msg: \"Invalid Model\" }";
+            else return BadRequest("Проблема с моделью");
+            return BadRequest("Что-то пошло не так");
         }
         /// <summary>
         /// Авторизация пользователя
         /// </summary>
-        /// <param name="model"></param>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Account/Login
+        ///     {
+        ///        "email": test@test.ru,
+        ///        "password": password",
+        ///        "rememberMe": true       
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="model">Пользователь</param>
         /// <response code='200'> Пользователь успешно авторизован</response>
         /// <response code='401'> Пользователь не прошел аутентификацию</response>
         [HttpPost]
+        [ResponseType(typeof(LoginDto))]
         [Route("Login")]
-        public async Task<string> Login(LoginDto model)
+        public async Task<ActionResult> Login(LoginDto model)
         {
             if (ModelState.IsValid)
             {
@@ -74,26 +103,69 @@ namespace Application.Web.Controllers
                     await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
                 if (result.Succeeded)
                 {
-                    return "{ error: 0, msg: \"Successful Login\" }";
+                    var user = await _signInManager.UserManager.FindByEmailAsync(model.Email);
+                    return Json(new
+                    {
+                        email = user.Email,
+                        fullname = user.FirstName + " " + user.MiddleName + " " + user.LastName
+                    });
                 }
                 else
                 {
-                    return "{ error: 2,  msg: \"Wrong Email or Password\" }";
+                    return Unauthorized("Логин не удался");
                 }
             }
-            return "{ error: 1,  msg: \"Invalid Model\" }";
+            return BadRequest("Модель не верна");
         }
         /// <summary>
         /// Выход пользователя из учетной записи
         /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Account/Logout
+        ///     {
+        ///        "id": 1        
+        ///     }
+        ///
+        /// </remarks>
+        /// 
         ///<response code='200'></response>
         [HttpPost]
         [Route("Logout")]
-        public async Task<string> Logout()
+        public async Task<ActionResult> Logout()
         {
             // удаляем аутентификационные куки
             await _signInManager.SignOutAsync();
-            return "{ error: 0,  msg: \"Successful Logout\" }";
+            return Ok("Выход успешен");
+        }
+        /// <summary>
+        /// Нужен для возвращения состояния аккаунта на Фронтэнд
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /Account/Context
+        ///     {
+        ///        "id": 1        
+        ///     }
+        ///
+        /// </remarks>
+        ///<response code='200'>Возврат Json с данными юзера или если он не залогинен</response>
+        [HttpGet]
+        [Route("Context")]
+        public async Task<ActionResult> Context()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                return Json(new
+                {
+                    email = user.Email,
+                    fullname = user.FirstName + " " + user.MiddleName + " " + user.LastName
+                });
+            }
+            return Ok("Не залогинен");
         }
     }
 }
