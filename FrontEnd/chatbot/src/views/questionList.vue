@@ -95,7 +95,7 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
     padding: 0;
   }
   .main {
-    background-color: #d4e2e4;
+    
   }
   .header {
     // background-image: url("bg2.jpg");
