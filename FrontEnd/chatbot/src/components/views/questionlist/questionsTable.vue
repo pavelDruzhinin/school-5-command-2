@@ -5,7 +5,7 @@
           <div class="questionBlock">
             {{question.text}}
             <div class="btPanel">
-              <button class="myBtn btnLittleNarrow" @click="edit(question)">Редактировать ✎</button>
+              <button class="myBtn btnLittleNarrow" @click="edit(index)">Редактировать ✎</button>
               <button class="myBtn btnLittleDelete" @click="del(index)">Удалить &times;</button>
             </div>
           </div>
@@ -25,8 +25,8 @@ export default {
     },
     props:['questions'],
     methods:{
-        edit(question){
-            return this.$emit('edit',question)
+        edit(index){
+            return this.$emit('edit',index)
         },
         del(index){
             return this.$emit('del',index)

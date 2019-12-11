@@ -7,5 +7,7 @@ namespace ChatsConstructor.WebApi.Dto
     {
         [Required]
         public List<QuestionDto> Questions { get; set; }
+
+        public List<long> RemoveQuestions { get; set; }
     }
 }

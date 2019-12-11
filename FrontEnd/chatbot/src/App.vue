@@ -3,40 +3,29 @@
     <div class="layout__navbar">
       <router-view name="navbar" />
     </div>
-    <div id="main" class="layout__content">
-      <router-view/>
+    <div class="layout__content">
+      <router-view />
     </div>
   </div>
 </template>
 
-<style lang="scss">
-  #main {
-    height: 100%;
-    width: 100%;
-    background-image: url(./assets/back.jpg);
-    background-repeat: no-repeat;
-    background-position: top center;
-    background-attachment: fixed;
-    background-size: cover;
-    
+<script>
+export default {};
+</script>
 
-  }
-  .layout {
-    
-    min-height: 100vh;
+<style lang="scss">
+@import url("https://fonts.googleapis.com/css?family=Lato:300,400,700|Noto+Sans:400,700&display=swap&subset=cyrillic");
+
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f8f9fa;
+  font-family: 'Lato', sans-serif;
+  &__content {
     display: flex;
     flex-direction: column;
-    background: #f9f8f8;
-    &__content {
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-    }
+    flex-grow: 1;
   }
-
-</style>
-
-<script>
-export default {
 }
-</script>
+</style>
