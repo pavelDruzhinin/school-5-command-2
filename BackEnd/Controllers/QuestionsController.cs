@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http.Description;
 using ChatsConstructor.WebApi.Dto;
 using ChatsConstructor.WebApi.Models;
 using ChatsConstructor.WebApi.Models.Domains;
@@ -83,7 +82,6 @@ namespace ChatsConstructor.WebApi.Controllers
         /// <response code='200'>Редактирование чата завершено успешно</response>
         /// <response code='401'>Пользователь не авторизован</response>
         [HttpPost]
-        [ResponseType(typeof(QuestionsDto))]
         [Route("{ChatId}")]
         public IActionResult Add(long ChatId, List<QuestionDto> Model)
         {

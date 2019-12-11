@@ -13,15 +13,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.IO;
-using System.Threading.Tasks;
 using SwaggerSettings = ChatsConstructor.WebApi.Settings.SwaggerSettings;
-using System.Xml.XPath;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Web.Http;
 
 namespace BackEnd
 {
@@ -61,8 +56,7 @@ namespace BackEnd
             });
 
             services.AddSignalR();
-            services.AddControllers();
-            services.AddSwaggerGen(c =>
+            /*services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { 
                     Title = "Web API",
@@ -78,48 +72,56 @@ namespace BackEnd
                 //c.SchemaFilter<XmlCommentsSchemaFilter>(comments);
 
 
-            });
+            });*/
         }
 
        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseStaticFiles();
-            app.UseSwagger();
+            //app.UseSwagger();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
             //app.UseHttpsRedirection();
-            var config = new HttpConfiguration();
-            var xmlFormatter = config.Formatters.XmlFormatter;
+            //var config = new HttpConfiguration();
+            //var xmlFormatter = config.Formatters.XmlFormatter;
 
             // Starts using XmlSerialiser rather than DataContractSerializer.
-            xmlFormatter.UseXmlSerializer = true;
+            //xmlFormatter.UseXmlSerializer = true;
 
-            app.UseRouting();
-
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseCookiePolicy();
             app.UseAuthentication();
-            app.UseAuthorization();
+
             var swaggerSettings = new SwaggerSettings();
+
             Configuration.GetSection(nameof(swaggerSettings)).Bind(swaggerSettings);
+
             app.UseSwagger(option =>
             {
                 option.RouteTemplate = swaggerSettings.JsonRoute;
             });
+
             app.UseSwaggerUI(option =>
             {
                 option.SwaggerEndpoint(swaggerSettings.UiEndpoint, swaggerSettings.Description);
                 option.RoutePrefix = "WebApi/swagger";
             });
 
-            app.UseEndpoints(endpoints =>
+            app.UseSignalR(routes =>
             {
-                endpoints.MapHub<ChatHub>("/chat");
+                routes.MapHub<ChatHub>("/chat");
+            });
 
-                endpoints.MapControllers();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

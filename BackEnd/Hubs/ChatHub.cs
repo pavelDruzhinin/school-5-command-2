@@ -188,7 +188,7 @@ namespace ChatsConstructor.WebApi.Hubs
 
             // Сериализуем в JSON
             var json = JsonConvert.SerializeObject(sendDto);
-
+            
             // Отсылаем на фронт данные для всех людей которые находятся в этой сессии
             await Clients.Group(groupId).SendAsync("GetNextQuestion", json);
         }

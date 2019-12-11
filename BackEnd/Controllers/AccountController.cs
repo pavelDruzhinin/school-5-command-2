@@ -5,7 +5,6 @@ using ChatsConstructor.WebApi.Models.Domains;
 using ChatsConstructor.WebApi.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using System.Web.Http.Description;
 
 namespace Application.Web.Controllers
 {
@@ -42,7 +41,7 @@ namespace Application.Web.Controllers
 
         [HttpPost]
         [Route("Register")]
-        [ResponseType(typeof(RegisterDto))]
+        //[ResponseType(typeof(RegisterDto))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Register([FromBody] RegisterDto model)
@@ -93,7 +92,7 @@ namespace Application.Web.Controllers
         /// <response code='200'> Пользователь успешно авторизован</response>
         /// <response code='401'> Пользователь не прошел аутентификацию</response>
         [HttpPost]
-        [ResponseType(typeof(LoginDto))]
+        //[ResponseType(typeof(LoginDto))]
         [Route("Login")]
         public async Task<ActionResult> Login(LoginDto model)
         {
@@ -106,7 +105,7 @@ namespace Application.Web.Controllers
                     var user = await _signInManager.UserManager.FindByEmailAsync(model.Email);
                     return Json(new
                     {
-                        email = user.Email,
+                        //email = user.Email,
                         fullname = user.FirstName + " " + user.MiddleName + " " + user.LastName
                     });
                 }
