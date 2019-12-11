@@ -105,7 +105,7 @@ namespace Application.Web.Controllers
                     var user = await _signInManager.UserManager.FindByEmailAsync(model.Email);
                     return Json(new
                     {
-                        //email = user.Email,
+                        email = user.Email,
                         fullname = user.FirstName + " " + user.MiddleName + " " + user.LastName
                     });
                 }
