@@ -25,8 +25,8 @@ export default {
     },
     props:['questions'],
     methods:{
-        edit(question){
-            return this.$emit('edit',question)
+        edit(index){
+            return this.$emit('edit',index)
         },
         del(index){
             return this.$emit('del',index)

@@ -18,8 +18,12 @@
       :question="question" />
       <b-button @click="addtoDb">Сохранить</b-button>
     </div>
-    <b-modal id="deletemodal" title=Удаление>
+    <b-modal @ok="deltext ? deletefromchat(deleteindex) : deletefromqueue(deleteindex)" id="deletemodal" title=Удаление>
       <p>Вы уверены что хотите удалить вопрос ?</p>
+      <p>{{deltext 
+        ? "Данный вопрос будет удалён из чата" 
+        : "Данный вопрос будет удален из очереди на добавление в чат"}}
+      </p>
       </b-modal>
   </div>
 </template>
@@ -47,10 +51,20 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
           selected:null
         },
         editmode:false,
-        index:null
+        index:null,
+        deltext:false,
+        deleteindex:null
       };
     },
+    mounted(){
+      this.updatequestions()
+    },
     methods: {
+      updatequestions(){
+        this.$http.get("questions/"+this.$route.params.id)
+        .then(response=>this.questions=response.data)
+        .catch(err=>console.log(err))
+      },
       create(){
         this.editmode=false
         this.resetmodal();
@@ -75,8 +89,25 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
         this.question.buttons.splice(index,1)
       },
       deletequestion(index){
-        if(this.questions[index].id) console.log('lets delete')
-          else this.questions.splice(index,1)
+        if(this.questions[index].id) this.deltext=true
+          else this.deltext=false
+        this.$bvModal.show("deletemodal")
+        this.deleteindex=index;
+      },
+      deletefromchat(index){
+        this.$http
+        .post("questions/delete/"+this.questions[index].id)
+        .then(this.questions.splice(index,1))
+        this.deleteindex=null;
+      },
+      deletefromqueue(index){
+        this.questions.splice(index,1);
+        this.deleteindex=null
+      },
+      deletequestion(index){
+        if(this.questions[index].id) this.deltext=true
+          else this.deltext=false
+        this.$bvModal.show("deletemodal")
       },
       addvariant(){
         this.question.buttons.push({text:''})
