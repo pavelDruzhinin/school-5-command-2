@@ -1,20 +1,26 @@
  <template>
   <div class="main">
     <div class="list">
+      <b-button @click="create">Добавить ✚</b-button>
+      <div v-if="questions.length">
       <p>Список вопросов:</p>
       <questionstable 
       :questions="questions"
       @edit="edit"
       @del="deletequestion"
       />
-      <b-button @click="create">Добавить ✚</b-button>
+      </div>
+      <div v-else><p>у вас пока нет вопросов</p></div>
       <question 
       @addvariant="addvariant" 
       @deletevariant="deletevariant" 
-      @savequestion="save"
+      @savequestion="editmode ? savechanges(index) : save()"
       :question="question" />
-      <button class="myBtn" @click="addtoDb">Сохранить</button>
+      <b-button @click="addtoDb">Сохранить</b-button>
     </div>
+    <b-modal id="deletemodal" title=Удаление>
+      <p>Вы уверены что хотите удалить вопрос ?</p>
+      </b-modal>
   </div>
 </template>
 <script>
@@ -28,7 +34,6 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
     data() {
       return {
         questions:[],
-        questionclone:Object,
         question:{
           text:'',
           buttons:[],
@@ -40,46 +45,88 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
             ],
           type:false,
           selected:null
-        }
+        },
+        editmode:false,
+        index:null
       };
     },
     methods: {
       create(){
+        this.editmode=false
         this.resetmodal();
         this.$bvModal.show("modal")
       },
       resetmodal(){
-        this.question.text='';
-        this.question.buttons=[];
-        this.question.type=false;
-        this.question.selected=null;
+        this.question={
+        text:'',
+        buttons:[],
+        questiontype:[
+            {value:null, text:'Выберите тип'}, 
+            {value:'Welcome', text:'Приветствие'}, 
+            {value:'Normal', text:'Обычный вопрос'},
+            {value:'Final', text:'Завершающий диалог'}
+            ],
+        type:false,
+        selected:null,
+        }
+        this.index=null
       },
       deletevariant(index){
         this.question.buttons.splice(index,1)
       },
       deletequestion(index){
-        this.questions.splice(index,1)
+        if(this.questions[index].id) console.log('lets delete')
+          else this.questions.splice(index,1)
       },
       addvariant(){
         this.question.buttons.push({text:''})
       },
       save(){
         let questiontext = this.question.text;
-        let questionbuttons = this.question.buttons
-        let questiontype = this.question.selected
-        if(questionbuttons.length) 
+        let questionbuttons = this.question.buttons;
+        let questiontype = this.question.selected;
+        let type = this.question.type
+        if(questionbuttons.length && type) 
           {
             this.questions.push({text:questiontext,buttons:questionbuttons,questiontype:questiontype})
-            return true
           }
-          else {this.questions.push({text:questiontext,questiontype:questiontype}); return true}
+          else {this.questions.push({text:questiontext,questiontype:questiontype})}
+        this.resetmodal()
       },
-      edit(question){
+      savechanges(index){
+        let questionid=null;
+        if(this.question.id) questionid=this.question.id
+        let questiontext = this.question.text;
+        let questionbuttons = this.question.buttons;
+        let questiontype = this.question.selected;
+        let type = this.question.type
+        if(!type && questionid==null) 
+          {
+            this.questions.splice(index,1, {text:this.question.text, questiontype:this.question.selected})
+          } 
+        else if(type && questionid==null)
+          {
+            this.questions.splice(index,1, {text:this.question.text, questiontype:this.question.selected, buttons:this.question.buttons})
+          }
+        else if(!type && questionid!=null)
+          {
+            this.questions.splice(index,1, {text:this.question.text, questiontype:this.question.selected, id:questionid})
+          }
+        else 
+          {
+            this.questions.splice(index,1, {text:this.question.text, questiontype:this.question.selected, buttons:this.question.buttons, id:questionid})
+          }
+        this.resetmodal();
+      },
+      edit(index){
         this.$bvModal.show("modal");
-        if(question.id) this.question.id=question.id;
-        this.question.text=question.text;
-        this.question.selected=question.questiontype;
-        if(question.buttons!==null) {this.question.buttons=question.buttons; this.question.type=true} 
+        let questionedit = this.questions[index];
+        this.editmode=true;
+        this.index=index;
+        if(questionedit.id) this.question.id=questionedit.id;
+        this.question.text=questionedit.text;
+        this.question.selected=questionedit.questiontype;
+        if(questionedit.buttons.length) {this.question.buttons=questionedit.buttons; this.question.type=true;} 
       },
       addtoDb(){
         this.$http
@@ -93,9 +140,6 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
   * {
     margin: 0;
     padding: 0;
-  }
-  .main {
-    
   }
   .header {
     // background-image: url("bg2.jpg");

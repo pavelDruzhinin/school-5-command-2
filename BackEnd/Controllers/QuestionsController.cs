@@ -83,13 +83,13 @@ namespace ChatsConstructor.WebApi.Controllers
         [HttpPost]
         [ResponseType(typeof(QuestionsDto))]
         [Route("{ChatId}")]
-        public IActionResult Add(long ChatId, QuestionsDto Model)
+        public IActionResult Add(long ChatId, List<QuestionDto> Model)
         {
             if (ModelState.IsValid)
             {
                 short queueNumber = 0;
 
-                foreach (QuestionDto questionDto in Model.Questions)
+                foreach (QuestionDto questionDto in Model)
                 {   
                     Question q;
                     QuestionAnswerType qt;
@@ -148,20 +148,6 @@ namespace ChatsConstructor.WebApi.Controllers
                     }
                 }
 
-                if (Model.RemoveQuestions != null) {
-                    var removeQuestions = _db.Questions
-                        .Where(q => Enumerable.Contains(Model.RemoveQuestions, q.Id))
-                        .ToList();
-
-                    foreach(var rq in removeQuestions)
-                    {
-                        rq.DeleteUtcDateTime = DateTime.Now;
-                        _db.Questions.Update(rq);
-                    }
-
-                    _db.SaveChanges();
-                }
-
                 var QuestionsList = _db.Questions
                     .Include(q => q.Buttons)
                     .Where(q => q.ChatId == ChatId && q.DeleteUtcDateTime == null)
@@ -181,6 +167,16 @@ namespace ChatsConstructor.WebApi.Controllers
             {
                 return BadRequest(ModelState);
             }
+        }
+
+        [HttpPost]
+        [Route("delete/{questionid}")]
+        public  IActionResult Delete(long questionid){
+            var question = _db.Questions.FirstOrDefault(x=>x.Id==questionid);
+            question.DeleteUtcDateTime = DateTime.Now;
+            _db.Questions.Update(question);
+            _db.SaveChanges();
+            return Ok();
         }
     }
 }
