@@ -82,6 +82,7 @@ namespace ChatsConstructor.WebApi.Controllers
         /// <response code='200'>Редактирование чата завершено успешно</response>
         /// <response code='401'>Пользователь не авторизован</response>
         [HttpPost]
+        [Produces(typeof(List<QuestionsDto>))]
         [Route("{ChatId}")]
         public IActionResult Add(long ChatId, List<QuestionDto> Model)
         {
@@ -168,7 +169,13 @@ namespace ChatsConstructor.WebApi.Controllers
                 return BadRequest(ModelState);
             }
         }
-
+        /// <summary>
+        /// Удаление вопроса из чата
+        /// </summary>
+        /// <param name="questionid">Идентификационный номер вопроса</param>
+        /// <returns></returns>
+        /// <response code='200'>Вопрос удален из чата</response>
+        /// <response code='401'>Пользователь не авторизован</response>
         [HttpPost]
         [Route("delete/{questionid}")]
         public  IActionResult Delete(long questionid){

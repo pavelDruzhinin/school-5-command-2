@@ -55,7 +55,7 @@ namespace BackEnd
                     return Task.CompletedTask;
                 };
             });
-            // services.AddMvc();
+            //services.AddMvc();
             services.AddSignalR();
             services.AddSwaggerGen(c =>
             {

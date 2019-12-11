@@ -129,7 +129,7 @@ namespace Application.Web.Controllers
         ///
         /// </remarks>
         /// 
-        ///<response code='200'></response>
+        ///<response code='200'>Пользователь вышел из личного кабинета</response>
         [HttpPost]
         [Route("Logout")]
         public async Task<ActionResult> Logout()

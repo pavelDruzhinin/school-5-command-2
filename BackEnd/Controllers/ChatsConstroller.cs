@@ -101,6 +101,7 @@ namespace Application.Web.Controllers
         /// </summary>
         /// <param name="Model">Чат</param>
         /// <returns></returns>
+        /// <response code='200'>Создан новый чат</response>
         [HttpPost]
         [DefaultValue("Name")]
         [Produces(typeof(ChatDto))]
