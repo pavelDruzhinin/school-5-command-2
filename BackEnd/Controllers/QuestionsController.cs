@@ -44,8 +44,8 @@ namespace ChatsConstructor.WebApi.Controllers
         /// </remarks>
         /// <param name="ChatId">Идентификационный номер чата</param>
         /// <returns>Возвращает список вопросов</returns>
-        /// <response code='200'>Возвращает  список вопросов</response>
-        ///<response code='401'>Unauthorized</response>
+        /// <response code='200'>Возвращает список вопросов</response>
+        /// <response code='401'>Пользователь не авторизован</response>
         [HttpGet]
         [Route("{ChatId}")]
         public IActionResult Get(long ChatId)
@@ -66,20 +66,22 @@ namespace ChatsConstructor.WebApi.Controllers
             return Ok(QuestionsList);
         }
         /// <summary>
-        /// Создание нового чата
+        /// Добавление/редактирование вопросов в выбранном чате
         /// </summary>
         /// <remarks>
         /// Sample request:
         ///
-        ///     GET /Questions
+        ///     POST /Questions
         ///     {
         ///        "ChatId": 1        
         ///     }
         ///
         /// </remarks>
         /// <param name="ChatId">Идентификационный номер чата</param>
-        /// <param name="Model">Добавление вопроса в чат</param>
+        /// <param name="Model">Вопрос</param>
         /// <returns></returns>
+        /// <response code='200'>Редактирование чата завершено успешно</response>
+        /// <response code='401'>Пользователь не авторизован</response>
         [HttpPost]
         [ResponseType(typeof(QuestionsDto))]
         [Route("{ChatId}")]

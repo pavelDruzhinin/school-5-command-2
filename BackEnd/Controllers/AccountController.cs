@@ -38,7 +38,7 @@ namespace Application.Web.Controllers
         /// <parameters name="model">Имя и почта пользователя </parameters>
         /// <remarks></remarks>        
         /// <response code='201'>Пользователь успешно зарегистрирован</response>
-        /// <response code='400'>Решистрация отклонена(?)</response>
+        /// <response code='400'>Решистрация отклонена</response>
 
         [HttpPost]
         [Route("Register")]

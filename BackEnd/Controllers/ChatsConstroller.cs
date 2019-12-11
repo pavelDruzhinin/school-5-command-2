@@ -11,6 +11,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using ChatsConstructor.WebApi.Models.Domains.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 
 namespace Application.Web.Controllers
 {
@@ -38,6 +39,8 @@ namespace Application.Web.Controllers
         ///     
         /// </remarks>
         /// <returns></returns>
+        /// <response code='200'>Возвращает список чатов</response>
+        /// <response code='401'>Пользователь не авторизован</response>
         [HttpGet]
         public async Task<IActionResult> Get ()
         {
@@ -93,10 +96,16 @@ namespace Application.Web.Controllers
 
             return Json(new { SessionId = createdSession.Id });
         }
-
+        /// <summary>
+        /// Создание чата пользователем
+        /// </summary>
+        /// <param name="Model">Чат</param>
+        /// <returns></returns>
         [HttpPost]
+        [DefaultValue("Name")]
+        [Produces(typeof(ChatDto))]
         [Route("Add")]
-        public async Task<IActionResult> Add (ChatDto Model)
+        public async Task<IActionResult> Add ([FromBody] ChatDto Model)
         {
             var user = await _userManager.GetUserAsync(User);
 
