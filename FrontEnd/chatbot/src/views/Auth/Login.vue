@@ -97,8 +97,8 @@ export default {
 .form-group {
   .error {
     display: none;
-    font-size: 20.4px;
-    color: rgba(4, 0, 255, 0.425);
+    font-size: 14px;
+    color: #dc3545;
   }
   &.errInput {
     .error {
