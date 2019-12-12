@@ -41,7 +41,8 @@ namespace BackEnd
             {
                 mc.AddProfile(new MappingProfile());
             });
-
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
             services.AddIdentity<User, IdentityRole<Guid>>(opts => {
                 opts.Password.RequiredLength = 5;   // минимальная длина
                 opts.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
@@ -57,6 +58,7 @@ namespace BackEnd
                 };
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
             services.AddSignalR();
             services.AddSwaggerGen(c =>
             {
