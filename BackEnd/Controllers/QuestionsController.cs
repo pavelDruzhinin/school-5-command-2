@@ -93,12 +93,20 @@ namespace ChatsConstructor.WebApi.Controllers
                 foreach (QuestionDto questionDto in Model)
                 {   
                     Question q;
-                    QuestionAnswerType qt;
+                    QuestionType qt;
+                    QuestionAnswerType qat;
+
+                    if (queueNumber == 0) 
+                        qt = QuestionType.Welcome;
+                    else if (queueNumber == Model.Count() - 1)
+                        qt = QuestionType.Final;
+                    else 
+                        qt = QuestionType.Normal;
 
                     if (questionDto.Buttons == null)
-                        qt = QuestionAnswerType.OnlyChatAvailable;
+                        qat = QuestionAnswerType.OnlyChatAvailable;
                     else
-                        qt = QuestionAnswerType.OnlyButtonsAvailable;
+                        qat = QuestionAnswerType.OnlyButtonsAvailable;
 
                     if (questionDto.Id == null) {
                         q = new Question()
@@ -106,8 +114,8 @@ namespace ChatsConstructor.WebApi.Controllers
                             ChatId = ChatId,
                             Text = questionDto.Text,
                             QueueNumber = queueNumber++,
-                            QuestionType = (QuestionType)Enum.Parse(typeof(QuestionType), questionDto.QuestionType),
-                            QuestionAnswerType = qt
+                            QuestionType = qt,
+                            QuestionAnswerType = qat
                         };
 
                         _db.Questions.Add(q);
@@ -116,8 +124,8 @@ namespace ChatsConstructor.WebApi.Controllers
                         
                         q.Text = questionDto.Text;
                         q.QueueNumber = queueNumber++;
-                        q.QuestionType = (QuestionType)Enum.Parse(typeof(QuestionType), questionDto.QuestionType);
-                        q.QuestionAnswerType = qt;
+                        q.QuestionType = qt;
+                        q.QuestionAnswerType = qat;
 
                         _db.Questions.Update(q);
                     }
