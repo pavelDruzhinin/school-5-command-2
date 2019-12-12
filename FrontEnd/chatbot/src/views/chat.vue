@@ -1,10 +1,25 @@
 <template>
   <div id="chat_wrap">
     <div id="chat">
-    <ChatForm /> 
+     <textarea placeholder="Введите сообщение" v-model="text.message" @keydown.enter="send" :disabled="disabled" />
     </div>
     <div id="chat-form">
-     <Message />
+    <div class="wrap">
+      <div class="mes" v-for="(chat,index) of chat" :key="index">
+        <small>
+          <strong>{{chat.user}}</strong>
+        </small>
+        <p>{{chat.message}}</p>
+        <ul 
+          v-show="chat.buttons" 
+          v-for="(variant, index) of chat.variants" 
+          :key="index">
+            <li>
+              <input type="radio" name="variant" v-on:change="send">{{variant}}
+            </li>
+        </ul>
+      </div>
+    </div>
     </div>
     
   </div>
@@ -14,15 +29,85 @@
 import Message from "../components/Message";
 import ChatForm from "../components/ChatForm";
 export default {
-  components:{
-    Message,
-    ChatForm
+  data: () => (
+    {
+      count:0,
+      disabled:false,
+      text: 
+      
+        {
+          user: "Respondent",
+          message: "",
+          buttons: false,
+          variants:"",
+          disInput:false
+        }
+      ,
+      chat: [],
+      questions: 
+      [
+        {
+          user: "Admin",  
+          message:"Привет",
+          buttons: false,
+          variants: "",
+          disInput:false
+        },
+        {
+          user: "Admin",  
+          message:"Как дела",
+          buttons: false,
+          variants: "",
+          disInput:false
+        },
+        {
+          user: "Admin",  
+          message:"Как в школе?",
+          buttons: true,
+          variants: 
+            [
+              "Нормально",
+              "Всё плохо"
+            ],
+          disInput:true
+        },
+        {
+          user: "Admin",  
+          message:"А Коля выйдет?",
+          buttons: false,
+          variants:"",
+          disInput:false
+        },
+      ] 
+    }
+  ),
+  created() {
+    this.chat.unshift(this.questions[this.count])
+  },
+  methods: {
+    send() {
+       this.chat.push({...this.text})
+       this.text.message = "";
+       this.count = this.count + 1;
+       this.chat.push(this.questions[this.count]);
+       if (this.questions[this.count].disInput === false) {
+         this.disabled = false
+       } else {
+         this.disabled = true;
+       }
+       
+    }
   }
 };
 </script>
 
 <style>
-#chat_wrap {
+
+    textarea {
+      width: 100%;
+      height: 100%;
+      }
+  #chat_wrap {
   
   
   overflow: hidden;
@@ -40,6 +125,8 @@ export default {
   height: 80px;
   background: #5e5f5f;
   grid-area:chat;
+
+    
 }
 #chat_form {
   overflow:scroll;
