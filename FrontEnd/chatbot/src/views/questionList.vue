@@ -151,9 +151,9 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
       },
       edit(index){
         this.$bvModal.show("modal");
+        this.index=index;
         let questionedit = this.questions[index];
         this.editmode=true;
-        this.index=index;
         if(questionedit.id) this.question.id=questionedit.id;
         this.question.text=questionedit.text;
         this.question.selected=questionedit.questiontype;

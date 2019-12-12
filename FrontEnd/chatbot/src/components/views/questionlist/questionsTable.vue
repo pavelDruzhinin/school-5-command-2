@@ -1,6 +1,5 @@
 <template>
     <ul class="NumMarker">
-        <draggable v-model="questions">
         <li class="questionText" v-for="(question,index) in questions" :key="index">
           <div class="questionBlock">
             {{question.text}}
@@ -14,7 +13,6 @@
             <li v-for="(button,index) in question.buttons" class="variantTex" :key="index">{{button.text}}</li>
           </ul>
         </li>
-        </draggable>
       </ul>
 </template>
 <script>

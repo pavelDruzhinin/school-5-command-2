@@ -58,8 +58,8 @@ namespace Application.Web.Controllers
         /// </summary>
         /// <param name="chatId">������������� ����</param>
         /// <returns></returns>
-        [HttpPost]
-        [Route("{chatId:long}")]
+        [HttpGet]
+        [Route("GetSession/{chatId}")]
         public async Task<IActionResult> GetSession(long chatId)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);

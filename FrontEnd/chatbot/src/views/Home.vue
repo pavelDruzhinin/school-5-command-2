@@ -11,9 +11,9 @@
       <p>Зарегистрируйтесь и соберите своего первого чат бота в конструкторе</p>
       <b-button
         class="btn"
-        @click="$router.push({ name: 'Registration' })"
+        @click="isAuthenticated ? $router.push({name: 'Dashboard'}) : $router.push({ name: 'Registration' })"
         variant="outline-light"
-      >Попробовать бесплатно</b-button>
+      >{{isAuthenticated ? "Начать работу" : "Попробовать бесплатно"}}</b-button>
     </div>
     <div class="cards__title">
       <span>Возможности платформы</span>
@@ -50,7 +50,12 @@
 </template>
 
 <script>
-export default {};
+import { mapGetters } from "vuex";
+export default {
+  computed: {
+      ...mapGetters(["isAuthenticated"])
+    },
+};
 </script>
 
 <style lang="scss" scoped>

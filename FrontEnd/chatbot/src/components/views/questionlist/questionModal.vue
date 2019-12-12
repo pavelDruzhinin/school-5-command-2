@@ -21,9 +21,6 @@
         </draggable>
       </b-list-group>
     </b-form-group>
-    <b-form-group>
-      <b-form-select v-model="question.selected" :options="question.questiontype" />
-    </b-form-group>
   </b-modal>
 </template>
 

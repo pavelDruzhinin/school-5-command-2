@@ -20,7 +20,9 @@
                 {{ chat.name }}
                 <div class="chat-view__inner mt-4">
                   <b-button variant="outline-success mr-4" @click="edit(chat.id)">Редактировать</b-button>
-                  <b-button variant="outline-danger" @click="removeId(chat.id)">Удалить</b-button>
+                  <b-button variant="outline-danger mr-4" @click="removeId(chat.id)">Удалить</b-button>
+                  <b-button variant="outline-primary mr-4" @click="share(chat.id)">Поделиться</b-button>
+                  <b-button variant="outline-dark" @click="share(chat.id)">Пройти чат</b-button>
                 </div>
               </li>
             </ul>
@@ -49,6 +51,9 @@
         </b-collapse>
       </div>
     </div>
+    <b-modal title="Поделиться" id="share">
+      <b-form-input v-model="link" />
+    </b-modal>
   </div>
 </template>
 
@@ -67,7 +72,8 @@ export default {
         { id: 0, name: "user1" },
         { id: 1, name: "user2" },
         { id: 2, name: "user3" }
-      ]
+      ],
+      link:null
     };
   },
   created(){
@@ -77,6 +83,10 @@ export default {
     getchats(){
       this.$http.get('/chats/')
       .then(response=>this.chats=response.data)
+    },
+    share(id){
+      this.$bvModal.show("share");
+      this.link="localhost:8080/chat/"+id
     },
     removeId(id) {
       let chats = this.chats;

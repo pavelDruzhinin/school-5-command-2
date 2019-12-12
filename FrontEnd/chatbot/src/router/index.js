@@ -32,7 +32,7 @@ const routes = [
     }
   },
   {
-    path: '/chat',
+    path: '/chat/:id',
     name: 'chat',
     components: {
       default: () => import('../views/chat.vue'),
