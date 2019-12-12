@@ -17,6 +17,8 @@ using System.Reflection;
 using System.IO;
 using SwaggerSettings = ChatsConstructor.WebApi.Settings.SwaggerSettings;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BackEnd
 {
@@ -54,14 +56,15 @@ namespace BackEnd
                     return Task.CompletedTask;
                 };
             });
-
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSignalR();
-            /*services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { 
+                c.SwaggerDoc("v1", new Info
+                {
                     Title = "Web API",
                     Version = "v1",
-                
+
                 });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -72,7 +75,7 @@ namespace BackEnd
                 //c.SchemaFilter<XmlCommentsSchemaFilter>(comments);
 
 
-            });*/
+            });
         }
 
        
@@ -91,8 +94,6 @@ namespace BackEnd
 
             // Starts using XmlSerialiser rather than DataContractSerializer.
             //xmlFormatter.UseXmlSerializer = true;
-
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();

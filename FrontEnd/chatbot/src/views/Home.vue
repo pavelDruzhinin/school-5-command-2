@@ -3,7 +3,7 @@
     <div class="header">
       <h1 class="title">
         Чат
-        <span class="title-color">Бот</span>
+        <span class="title-color">БОТ</span>
       </h1>
       <span class="subtitle">Создать чат бота быстро и легко</span>
     </div>
