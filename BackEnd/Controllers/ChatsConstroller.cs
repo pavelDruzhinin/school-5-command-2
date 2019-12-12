@@ -151,5 +151,37 @@ namespace Application.Web.Controllers
             else return BadRequest("Возвращение в личный кабинет");
             return BadRequest("Что-то пошло не так");
         }
+
+        [Route("Respondents")]
+        [HttpGet]
+        public async Task<IActionResult> GetRespondents ()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var repondentsList = _db.Chats
+                .Where(x => x.UserId == user.Id)
+                .Join(_db.ChatSessions,
+                    c => c.Id,
+                    cs => cs.ChatId,
+                    (c, cs) => new {
+                        ChatId = c.Id,
+                        ChatName = c.Name,
+                        UserId = cs.UserId
+                    }
+                )
+                .Join(_db.Users,
+                    rl => rl.UserId,
+                    u => u.Id,
+                    (rl, u) => new {
+                        ChatId = rl.ChatId,
+                        ChatName = rl.ChatName,
+                        UserId = rl.UserId,
+                        UserName = u.LastName + " " + u.LastName + " " + u.MiddleName
+                    }
+                )
+                .ToList();
+
+            return Ok(repondentsList);
+        }
     }
 }
