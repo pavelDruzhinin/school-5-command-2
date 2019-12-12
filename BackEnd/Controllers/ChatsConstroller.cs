@@ -67,6 +67,9 @@ namespace Application.Web.Controllers
             if (user == null)
                 return BadRequest();
 
+            // не знаю способа лучше (по бырику)
+            user = _userManager.Users.Include(x => x.Sessions).FirstOrDefault(x => x.Id == user.Id);
+
             var notCompletedSession = user.Sessions.FirstOrDefault(x => x.ChatId == chatId && !x.IsCompleted);
 
             if (notCompletedSession != null)
