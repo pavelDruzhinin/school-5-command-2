@@ -59,10 +59,10 @@ namespace ChatsConstructor.WebApi.Hubs
                 var history = _mapper.Map<HistoryDto>(session);
 
                 // Сериализуем в JSON
-                var json = JsonConvert.SerializeObject(history);
+                //var json = JsonConvert.SerializeObject(history);
 
                 // Отправляем историю к новому подключившемуся к сессии человеку
-                await Clients.Caller.SendAsync("EnterToSession", json);
+                await Clients.Caller.SendAsync("EnterToSession", history);
             }
             else
             {
@@ -97,10 +97,10 @@ namespace ChatsConstructor.WebApi.Hubs
                 };
 
                 // Сериализуем в JSON
-                var json = JsonConvert.SerializeObject(history);
+                //var json = JsonConvert.SerializeObject(history);
 
                 // Отправляем историю к новому подключившемуся к сессии человеку
-                await Clients.Caller.SendAsync("EnterToSession", json);
+                await Clients.Caller.SendAsync("EnterToSession", history);
             }
         }
 
@@ -187,10 +187,10 @@ namespace ChatsConstructor.WebApi.Hubs
             };
 
             // Сериализуем в JSON
-            var json = JsonConvert.SerializeObject(sendDto);
+            //var json = JsonConvert.SerializeObject(sendDto);
             
             // Отсылаем на фронт данные для всех людей которые находятся в этой сессии
-            await Clients.Group(groupId).SendAsync("GetNextQuestion", json);
+            await Clients.Group(groupId).SendAsync("GetNextQuestion", sendDto);
         }
 
         /// <summary>
