@@ -9,13 +9,13 @@
         <small>
           <strong>{{chat.user}}</strong>
         </small>
-        <p>{{chat.message}}</p>
+        <p>{{chat.message}} {{chat.radio}}</p>
         <ul 
           v-show="chat.buttons" 
           v-for="(variant, index) of chat.variants" 
           :key="index">
             <li>
-              <input type="radio" name="variant" v-on:change="send">{{variant}}
+              <input type="radio" name="variant" v-on:change="send" :value="variant" v-model="text.radio">{{variant}}
             </li>
         </ul>
       </div>
@@ -40,7 +40,8 @@ export default {
           message: "",
           buttons: false,
           variants:"",
-          disInput:false
+          disInput:false,
+          radio:""
         }
       ,
       chat: [],
