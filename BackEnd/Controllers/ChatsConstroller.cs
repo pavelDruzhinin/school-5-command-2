@@ -86,6 +86,9 @@ namespace Application.Web.Controllers
 
             var welcomeQuestion = _db.Questions.FirstOrDefault(x => x.ChatId == chatId && x.QuestionType == QuestionType.Welcome);
 
+            if (welcomeQuestion == null)
+                return BadRequest();
+
             _db.ChatSessionAnswers.Add(new ChatSessionAnswer()
             {
                 SessionId = createdSession.Id,
