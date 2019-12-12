@@ -70,13 +70,12 @@ export default {
       ]
     };
   },
-  created(){
-      this.getchats();
-    },
+  created() {
+    this.getchats();
+  },
   methods: {
-    getchats(){
-      this.$http.get('/chats/')
-      .then(response=>this.chats=response.data)
+    getchats() {
+      this.$http.get("/chats/").then(response => (this.chats = response.data));
     },
     removeId(id) {
       let chats = this.chats;
@@ -85,8 +84,8 @@ export default {
     openmodal() {
       this.$bvModal.show("modal1");
     },
-    edit(id){
-      this.$router.push('/edit/'+id)
+    edit(id) {
+      this.$router.push("/edit/" + id);
     },
     addchat() {
       this.$http.post("/chats/add", this.chat).then(response => {
