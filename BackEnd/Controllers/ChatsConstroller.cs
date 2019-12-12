@@ -30,7 +30,7 @@ namespace Application.Web.Controllers
             _db = db;
         }
         /// <summary>
-        /// Получение списка чатов
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -39,10 +39,10 @@ namespace Application.Web.Controllers
         ///     
         /// </remarks>
         /// <returns></returns>
-        /// <response code='200'>Возвращает список чатов</response>
-        /// <response code='401'>Пользователь не авторизован</response>
+        /// <response code='200'>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ</response>
+        /// <response code='401'>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</response>
         [HttpGet]
-        public async Task<IActionResult> Get ()
+        public async Task<IActionResult> Get()
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -54,9 +54,9 @@ namespace Application.Web.Controllers
         }
 
         /// <summary>
-        /// Получение сессии при заходе по ссылке в чат
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ
         /// </summary>
-        /// <param name="chatId">Идентификатор чата</param>
+        /// <param name="chatId">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ</param>
         /// <returns></returns>
         [HttpPost]
         [Route("{chatId:long}")]
@@ -97,21 +97,23 @@ namespace Application.Web.Controllers
             return Json(new { SessionId = createdSession.Id });
         }
         /// <summary>
-        /// Создание чата пользователем
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
-        /// <param name="Model">Чат</param>
+        /// <param name="Model">пїЅпїЅпїЅ</param>
         /// <returns></returns>
-        /// <response code='200'>Создан новый чат</response>
+        /// <response code='200'>пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ</response>
         [HttpPost]
         [DefaultValue("Name")]
         [Produces(typeof(ChatDto))]
         [Route("Add")]
-        public async Task<IActionResult> Add ([FromBody] ChatDto Model)
+        public async Task<IActionResult> Add([FromBody] ChatDto Model)
         {
             var user = await _userManager.GetUserAsync(User);
 
-            if (ModelState.IsValid) {
-                Chat c = new Chat() {
+            if (ModelState.IsValid)
+            {
+                Chat c = new Chat()
+                {
                     UserId = user.Id,
                     Name = Model.Name,
                     CreateUtcDateTime = DateTime.UtcNow
@@ -120,16 +122,34 @@ namespace Application.Web.Controllers
                 _db.Chats.Add(c);
                 _db.SaveChanges();
 
-                return Ok(new {
+                return Ok(new
+                {
                     Id = c.Id,
                     Name = c.Name,
                     CreateUtcDateTime = c.CreateUtcDateTime
                 });
-            } else {
+            }
+            else
+            {
                 return BadRequest(ModelState);
             }
         }
 
-        
+        [Route("isUserChat/{chatId}")]
+        [HttpGet]
+        public async Task<IActionResult> IsUserChat(long chatId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var chat = _db.Chats.FirstOrDefault(x => x.UserId == user.Id && x.Id == chatId);
+
+            if (chat != null)
+            {
+                if (chat.DeleteUtcDateTime == null)
+                    return Ok("Р§Р°С‚ СЃСѓС‰РµСЃС‚РІСѓРµС‚ Рё РїСЂРёРЅР°РґР»РµР¶РёС‚ РІР°Рј");
+            }
+            else return BadRequest("Р’РѕР·РІСЂР°С‰РµРЅРёРµ РІ Р»РёС‡РЅС‹Р№ РєР°Р±РёРЅРµС‚");
+            return BadRequest("Р§С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє");
+        }
     }
 }

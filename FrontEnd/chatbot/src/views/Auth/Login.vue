@@ -77,7 +77,7 @@ export default {
       if (!this.$v.$invalid)
         this.$store
           .dispatch("login", this.form)
-          .then(response => this.$router.push("/")); // здесь заменим ссылку на лк
+          .then(response => this.$router.push("/dashboard")); // здесь заменим ссылку на лк
     }
   }
 };

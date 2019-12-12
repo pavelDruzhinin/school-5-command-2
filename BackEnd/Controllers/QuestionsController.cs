@@ -180,7 +180,7 @@ namespace ChatsConstructor.WebApi.Controllers
         [Route("delete/{questionid}")]
         public  IActionResult Delete(long questionid){
             var question = _db.Questions.FirstOrDefault(x=>x.Id==questionid);
-            question.DeleteUtcDateTime = DateTime.Now;
+            question.DeleteUtcDateTime = DateTime.UtcNow;
             _db.Questions.Update(question);
             _db.SaveChanges();
             return Ok();

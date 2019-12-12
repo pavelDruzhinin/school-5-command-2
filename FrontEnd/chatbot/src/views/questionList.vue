@@ -56,12 +56,12 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
         deleteindex:null
       };
     },
-    mounted(){
+    created(){
       this.updatequestions()
     },
     methods: {
       updatequestions(){
-        this.$http.get("questions/"+this.$route.params.id)
+        this.$http.get("/questions/"+this.$route.params.id)
         .then(response=>this.questions=response.data)
         .catch(err=>console.log(err))
       },

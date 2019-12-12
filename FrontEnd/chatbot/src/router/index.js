@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store'
+import multiguard from 'vue-router-multiguard'
+import axios from 'axios'
 
 const ifAuth = (to, from, next) => {
   if (store.getters.isAuthenticated) next('/')
@@ -9,6 +11,13 @@ const ifAuth = (to, from, next) => {
 const ifNotAuth = (to, from, next) => {
   if (!store.getters.isAuthenticated) next('/auth/login')
   else next()
+}
+const ifNotOwnChat = (to,from,next) =>{
+  let id = to.params.id;
+  let status = 200
+  axios.get('/chats/isuserchat/'+id)
+  .then(()=>next())
+  .catch(()=>next('/dashboard'))
 }
 
 Vue.use(VueRouter)
@@ -37,7 +46,10 @@ const routes = [
       default: () => import('@/views/questionList.vue'),
       navbar: () => import('@/components/Navbar.vue')
     },
-    // beforeEnter:ifAuth
+    beforeEnter:multiguard([
+      ifNotAuth,
+      ifNotOwnChat
+    ])
   },
   {
     path: '/dashboard',
@@ -46,7 +58,7 @@ const routes = [
       default: () => import('@/views/Dashboard.vue'),
       navbar: () => import('@/components/Navbar.vue')
     },
-    beforeEnter: ifNotAuth
+    // beforeEnter: ifNotAuth
   },
   {
     path: '/auth',

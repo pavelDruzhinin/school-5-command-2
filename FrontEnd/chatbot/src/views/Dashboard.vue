@@ -16,10 +16,10 @@
           <b-card>
             <p class="card-text">Список созданных чатов</p>
             <ul class="chat-view__card">
-              <li class="chat-view__item mb-4" v-for="chat in chats" v-bind:key="chat.id">
+              <li class="chat-view__item mb-4" v-for="chat in chats" :key="chat.id">
                 {{ chat.name }}
                 <div class="chat-view__inner mt-4">
-                  <b-button variant="outline-success mr-4">Редактировать</b-button>
+                  <b-button variant="outline-success mr-4" @click="edit(chat.id)">Редактировать</b-button>
                   <b-button variant="outline-danger" @click="removeId(chat.id)">Удалить</b-button>
                 </div>
               </li>
@@ -61,7 +61,7 @@ export default {
   },
   data() {
     return {
-      chats: [{ id: 0, name: "Чат номер 1" }, { id: 1, name: "Чат номер 2" }],
+      chats: [],
       chat: { Name: "" },
       respondents: [
         { id: 0, name: "user1" },
@@ -70,13 +70,23 @@ export default {
       ]
     };
   },
+  created(){
+      this.getchats();
+    },
   methods: {
-    removeId: function(id) {
+    getchats(){
+      this.$http.get('/chats/')
+      .then(response=>this.chats=response.data)
+    },
+    removeId(id) {
       let chats = this.chats;
       this.chats = chats.filter(chat => chat.id != id);
     },
     openmodal() {
       this.$bvModal.show("modal1");
+    },
+    edit(id){
+      this.$router.push('/edit/'+id)
     },
     addchat() {
       this.$http.post("/chats/add", this.chat).then(response => {
