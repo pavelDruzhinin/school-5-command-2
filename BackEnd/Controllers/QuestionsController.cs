@@ -155,6 +155,13 @@ namespace ChatsConstructor.WebApi.Controllers
                             _db.SaveChanges();
                         }
                     }
+                    else{
+                        var b = _db.Buttons.Where(x=>x.QuestionId == questionDto.Id).ToList();
+                        foreach(var button in b){
+                            _db.Buttons.Remove(button);
+                        }
+                        _db.SaveChanges();
+                    }
                 }
 
                 var QuestionsList = _db.Questions

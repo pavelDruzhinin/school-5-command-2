@@ -115,13 +115,12 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
       save(){
         let questiontext = this.question.text;
         let questionbuttons = this.question.buttons;
-        let questiontype = this.question.selected;
         let type = this.question.type
         if(questionbuttons.length && type) 
           {
-            this.questions.push({text:questiontext,buttons:questionbuttons,questiontype:questiontype})
+            this.questions.push({text:questiontext,buttons:questionbuttons})
           }
-          else {this.questions.push({text:questiontext,questiontype:questiontype})}
+          else {this.questions.push({text:questiontext})}
         this.resetmodal()
       },
       savechanges(index){
@@ -129,23 +128,22 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
         if(this.question.id) questionid=this.question.id
         let questiontext = this.question.text;
         let questionbuttons = this.question.buttons;
-        let questiontype = this.question.selected;
         let type = this.question.type
         if(!type && questionid==null) 
           {
-            this.questions.splice(index,1, {text:this.question.text, questiontype:this.question.selected})
+            this.questions.splice(index,1, {text:this.question.text})
           } 
         else if(type && questionid==null)
           {
-            this.questions.splice(index,1, {text:this.question.text, questiontype:this.question.selected, buttons:this.question.buttons})
+            this.questions.splice(index,1, {text:this.question.text, buttons:this.question.buttons})
           }
         else if(!type && questionid!=null)
           {
-            this.questions.splice(index,1, {text:this.question.text, questiontype:this.question.selected, id:questionid})
+            this.questions.splice(index,1, {text:this.question.text, id:questionid})
           }
         else 
           {
-            this.questions.splice(index,1, {text:this.question.text, questiontype:this.question.selected, buttons:this.question.buttons, id:questionid})
+            this.questions.splice(index,1, {text:this.question.text, buttons:this.question.buttons, id:questionid})
           }
         this.resetmodal();
       },

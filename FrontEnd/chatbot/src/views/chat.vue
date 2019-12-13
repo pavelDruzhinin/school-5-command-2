@@ -3,14 +3,12 @@
     <div id="chat">
       <textarea
         placeholder="Введите сообщение"
-        v-model="text.message"
         @keydown.enter="send"
-        :disabled="disabled"
       />
     </div>
     <div id="chat-form">
       <div class="wrap">
-        <div class="mes" v-for="(chat,index) of chat" :key="index">
+        <!-- <div class="mes" v-for="(chat,index) of chat" :key="index">
           <small>
             <strong>{{chat.user}}</strong>
           </small>
@@ -27,7 +25,7 @@
               {{variant}}
             </li>
           </ul>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -40,71 +38,34 @@
   export default {
     data() {
       return {
-        count: 0,
-        questions: [
-          {
-            user: "Admin",
-            message: "Привет",
-            buttons: false,
-            variants: "",
-            disInput: false
-          },
-          {
-            user: "Admin",
-            message: "Как дела",
-            buttons: false,
-            variants: "",
-            disInput: false
-          },
-          {
-            user: "Admin",
-            message: "Как в школе?",
-            buttons: true,
-            variants: ["Нормально", "Всё плохо"],
-            disInput: true
-          },
-          {
-            user: "Admin",
-            message: "А Коля выйдет?",
-            buttons: false,
-            variants: "",
-            disInput: false
-          }
-        ],
-        disabled: false,
-        text: {
-          user: "Respondent",
-          message: "",
-          buttons: false,
-          variants: "",
-          disInput: false,
-          radio: ""
-        },
-        chat: []
+        signalr:null,
+        question:null,
+        messages:[],
+        history:null,
+        answer:null
       };
     },
     created() {
-      // debugger;
       this.$http
         .get("/chats/getsession/" + this.$route.params.id)
         .then(response => (this.session = response.data.sessionId));
-      let signalr = new HubConnectionBuilder()
+      this.signalr = new HubConnectionBuilder()
         .withUrl("/chat")
         .configureLogging(LogLevel.Information)
         .build();
-      signalr
+      this.signalr
         .start()
-        .then(() => {
-          // signalr.invoke('EnterToSession',this.session);
-          // signalr.on('EnterToSession',(message)=>this.messages.push(message));
-          // signalr.on('GetNextQuestion',(message)=>this.messages.push(message));
+        .then(()=>{
+          this.signalr.invoke('EnterToSession',this.session);
+          this.signalr.on('EnterToSession',(message)=>this.history=message);
+          this.signalr.on('GetNextQuestion',(question)=>this.question=question);
         })
         .catch(err => console.error(err.toString()));
-
-      //
     },
     methods: {
       send() {
+        this.messages.push(this)
+        this.signalr.invoke('AnswerForTheQuestion',answer)
         this.chat.push({ ...this.text });
         this.text.message = "";
         this.count = this.count + 1;
