@@ -25,13 +25,16 @@ namespace ChatsConstructor.WebApi.Models.Mapping
                         : x.ChatSessionAnswers.Except(new List<ChatSessionAnswer>() { x.ChatSessionAnswers.Last() })))
                 .ForMember(dest => dest.NextQuestion, opt => opt.MapFrom(x => x.IsCompleted ? null : x.ChatSessionAnswers.Last()));
 
-            CreateMap<ChatSessionAnswer, QuestionDto>()
+            CreateMap<ChatSessionAnswer, QuestionBaseDto>()
                 .ForMember(dest => dest.Text, opt => opt.MapFrom(x => x.Question.Text));
+
+            CreateMap<ChatSessionAnswer, HistoryQuestionDto>()
+                .ForMember(dest => dest.Answer, opt => opt.MapFrom(x => x.Text));
 
             CreateMap<ChatSessionAnswer, NextQuestionDto>()
                 .ForMember(dest => dest.Buttons, opt => opt.MapFrom(x => x.Question.Buttons))
                 .ForMember(dest => dest.QuestionAnswerType, opt => opt.MapFrom(x => x.Question.QuestionAnswerType))
-                .IncludeBase<ChatSessionAnswer, QuestionDto>();
+                .IncludeBase<ChatSessionAnswer, QuestionBaseDto>();
                 
 
             CreateMap<Button, ButtonDto>();

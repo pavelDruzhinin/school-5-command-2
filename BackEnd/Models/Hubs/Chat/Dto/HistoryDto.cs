@@ -10,7 +10,7 @@ namespace ChatsConstructor.WebApi.Models.Hubs.Chat.Dto
         /// <summary>
         /// История ответов на вопросы
         /// </summary>
-        public QuestionDto[] QuestionsHistory { get; set; }
+        public HistoryQuestionDto[] QuestionsHistory { get; set; }
 
         /// <summary>
         /// Следующий вопрос

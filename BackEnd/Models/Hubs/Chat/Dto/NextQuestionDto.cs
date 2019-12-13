@@ -1,11 +1,12 @@
-﻿using System;
+﻿using ChatsConstructor.WebApi.Models.Domains.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ChatsConstructor.WebApi.Models.Hubs.Chat.Dto
 {
-    public class NextQuestionDto : QuestionDto
+    public class NextQuestionDto : QuestionBaseDto
     {
         /// <summary>
         /// Идентификатор вопроса
