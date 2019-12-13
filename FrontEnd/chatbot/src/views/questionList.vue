@@ -18,11 +18,18 @@
       :question="question" />
       <b-button @click="addtoDb">Сохранить</b-button>
     </div>
-    <b-modal @ok="deltext ? deletefromchat(deleteindex) : deletefromqueue(deleteindex)" id="deletemodal" title=Удаление>
+    <b-modal @ok="deltext ? deletefromchat(index) : deletefromqueue(index)" id="deletemodal" title=Удаление>
       <p>Вы уверены что хотите удалить вопрос ?</p>
       <p>{{deltext 
         ? "Данный вопрос будет удалён из чата" 
         : "Данный вопрос будет удален из очереди на добавление в чат"}}
+      </p>
+      </b-modal>
+    <b-modal @ok="deltext ? deletefromquestion(index) : deletefromquestionqueue(index)" id="deletevariantmodal" title=Удаление>
+      <p>Вы уверены что хотите удалить вариант ?</p>
+      <p>{{deltext 
+        ? "Данный вариант будет удалён из вопроса" 
+        : "Данный вариант будет удален из очереди на добавление в вопрос"}}
       </p>
       </b-modal>
   </div>
@@ -50,10 +57,9 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
           type:false,
           selected:null
         },
-        editmode:false,
+        editmode:null,
         index:null,
-        deltext:false,
-        deleteindex:null
+        deltext:null,
       };
     },
     created(){
@@ -84,25 +90,41 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
         selected:null,
         }
         this.index=null
+        this.editmode=null
       },
       deletevariant(index){
-        this.question.buttons.splice(index,1)
+        if(this.question.buttons[index].id) this.deltext=true
+          else this.deltext=false
+        this.$bvModal.show("deletevariantmodal")
+      },
+      deletefromquestion(index){
+        this.$http
+          .post('/questions/deletevariant'+this.question.buttons[index].id)
+          .then(this.question.buttons.splice(index,1))
+          this.index=null;
+          this.deltext=null;
+      },
+      deletefromquestionqueue(index){
+        this.question.buttons.splice(index,1);
+        this.index=null;
+        this.deltext=null;
       },
       deletequestion(index){
         if(this.questions[index].id) this.deltext=true
           else this.deltext=false
         this.$bvModal.show("deletemodal")
-        this.deleteindex=index;
       },
       deletefromchat(index){
         this.$http
         .post("questions/delete/"+this.questions[index].id)
-        .then(this.questions.splice(index,1))
-        this.deleteindex=null;
+        .then(this.questions.splice(index,1));
+        this.index=null;
+        this.deltext=null;
       },
       deletefromqueue(index){
         this.questions.splice(index,1);
-        this.deleteindex=null
+        this.index=null;
+        this.deltext=null
       },
       deletequestion(index){
         if(this.questions[index].id) this.deltext=true
