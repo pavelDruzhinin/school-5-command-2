@@ -170,6 +170,7 @@ namespace Application.Web.Controllers
                     c => c.Id,
                     cs => cs.ChatId,
                     (c, cs) => new {
+                        SessionId = cs.Id,
                         ChatId = c.Id,
                         ChatName = c.Name,
                         UserId = cs.UserId
@@ -179,6 +180,7 @@ namespace Application.Web.Controllers
                     rl => rl.UserId,
                     u => u.Id,
                     (rl, u) => new {
+                        SessionId = rl.SessionId,
                         ChatId = rl.ChatId,
                         ChatName = rl.ChatName,
                         UserId = rl.UserId,
