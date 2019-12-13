@@ -13,6 +13,11 @@ namespace ChatsConstructor.WebApi.Models.Hubs.Chat.Dto
         public long Id { get; set; }
 
         /// <summary>
+        /// Тип возможности ответа на вопрос
+        /// </summary>
+        public QuestionAnswerType QuestionAnswerType { get; set; }
+
+        /// <summary>
         /// Кнопки ответа
         /// </summary>
         public List<ButtonDto> Buttons { get; set; }

@@ -29,7 +29,10 @@ namespace ChatsConstructor.WebApi.Models.Mapping
                 .ForMember(dest => dest.Text, opt => opt.MapFrom(x => x.Question.Text));
 
             CreateMap<ChatSessionAnswer, NextQuestionDto>()
-                .ForMember(dest => dest.Buttons, opt => opt.MapFrom(x => x.Question.Buttons));
+                .ForMember(dest => dest.Buttons, opt => opt.MapFrom(x => x.Question.Buttons))
+                .ForMember(dest => dest.QuestionAnswerType, opt => opt.MapFrom(x => x.Question.QuestionAnswerType))
+                .IncludeBase<ChatSessionAnswer, QuestionDto>();
+                
 
             CreateMap<Button, ButtonDto>();
         }
