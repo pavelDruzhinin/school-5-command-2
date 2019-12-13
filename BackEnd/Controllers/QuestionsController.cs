@@ -154,10 +154,9 @@ namespace ChatsConstructor.WebApi.Controllers
                            
                             _db.SaveChanges();
                         }
-                    }
-                    else{
-                        var b = _db.Buttons.Where(x=>x.QuestionId == questionDto.Id).ToList();
-                        foreach(var button in b){
+                    } else {
+                        var b = _db.Buttons.Where(x => x.QuestionId == questionDto.Id).ToList();
+                        foreach(var button in b) {
                             _db.Buttons.Remove(button);
                         }
                         _db.SaveChanges();
@@ -198,6 +197,24 @@ namespace ChatsConstructor.WebApi.Controllers
             question.DeleteUtcDateTime = DateTime.UtcNow;
             _db.Questions.Update(question);
             _db.SaveChanges();
+            return Ok();
+        }
+
+        /// <summary>
+        /// Удаление варианта ответа из чата
+        /// </summary>
+        /// <param name="buttonId">Идентификационный номер варианта</param>
+        /// <returns></returns>
+        /// <response code='200'>Вариант удален</response>
+        /// <response code='401'>Пользователь не авторизован</response>
+        [HttpPost]
+        [Route("DeleteVariant/{buttonId}")]
+        public IActionResult DeleteVariant (long buttonId) {
+            var b = _db.Buttons.FirstOrDefault(x => x.Id == buttonId);
+            
+            _db.Buttons.Remove(b);
+            _db.SaveChanges();
+
             return Ok();
         }
     }
