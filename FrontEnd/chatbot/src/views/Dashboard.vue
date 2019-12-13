@@ -38,9 +38,9 @@
               <li
                 class="mb-4 chat-view__item"
                 v-for="respondent in respondents"
-                v-bind:key="respondent.id"
+                v-bind:key="respondent.userId"
               >
-                {{ respondent.name }}
+                {{ respondent.userName }}
                 <div class="user-view__inner mt-4">
                   <b-button variant="outline-primary mr-4">Открыть профиль</b-button>
                   <b-button variant="outline-success">Посмотреть результаты</b-button>
@@ -68,21 +68,22 @@ export default {
     return {
       chats: [],
       chat: { Name: "" },
-      respondents: [
-        { id: 0, name: "user1" },
-        { id: 1, name: "user2" },
-        { id: 2, name: "user3" }
-      ],
+      respondents: [],
       link:null
     };
   },
   created(){
       this.getchats();
+      this.getrespondents()
     },
   methods: {
     getchats(){
       this.$http.get('/chats/')
       .then(response=>this.chats=response.data)
+    },
+    getrespondents(){
+      this.$http.get('/chats/respondents')
+      .then(response=>this.respondents=response.data)
     },
     share(id){
       this.$bvModal.show("share");
