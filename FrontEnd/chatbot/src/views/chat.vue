@@ -1,19 +1,25 @@
 <template>
   <div id="chat_wrap">
-    <div id="chat">
+    <div id="chat" v-if="questiontype==0">
       <textarea
         placeholder="Введите сообщение"
         @keydown.enter="send"
+        v-model="answer"
       />
+    </div>
+    <div id="chat" v-else-if="questiontype==1">
+      <div v-for="(button,index) in buttons" :key="index">
+        <label class="btn btn-primary radio-inline active">
+        <input type="radio" class="hidden" v-model="answer" :value="button.text" buttons button-variant="radio-btn-outline"/>{{button.text}}
+        </label>
+      </div>
+      <b-button @click="send">Отправить</b-button>
     </div>
     <div id="chat-form">
       <div class="wrap">
-        <!-- <div class="mes" v-for="(chat,index) of chat" :key="index">
-          <small>
-            <strong>{{chat.user}}</strong>
-          </small>
-          <p>{{chat.message}} {{chat.radio}}</p>
-          <ul v-show="chat.buttons" v-for="(variant, index) of chat.variants" :key="index">
+        <div class="mes" v-for="(message,index) in messages" :key="index">
+          <p>{{message.text}}</p>
+          <!-- <ul v-show="chat.buttons" v-for="(variant, index) of chat.variants" :key="index">
             <li>
               <input
                 type="radio"
@@ -24,16 +30,14 @@
               />
               {{variant}}
             </li>
-          </ul>
-        </div> -->
+          </ul> -->
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import Message from "../components/Message";
-  import ChatForm from "../components/ChatForm";
   import { LogLevel, HubConnectionBuilder } from "@aspnet/signalr";
   export default {
     data() {
@@ -42,7 +46,11 @@
         question:null,
         messages:[],
         history:null,
-        answer:null
+        answer:null,
+        session:null,
+        questiontype:null,
+        buttons:null,
+        questionid:null
       };
     },
     created() {
@@ -57,24 +65,41 @@
         .start()
         .then(()=>{
           this.signalr.invoke('EnterToSession',this.session);
-          this.signalr.on('EnterToSession',(message)=>this.history=message);
-          this.signalr.on('GetNextQuestion',(question)=>this.question=question);
+          this.signalr.on('EnterToSession',(message)=>{
+            this.history=message
+            this.question=this.history.nextQuestion
+            if(this.history.questionsHistory.length) 
+            {
+              for(let i=0; i< this.history.questionsHistory.length; i++)
+              {
+                var msg=this.history.questionsHistory[i];
+                this.messages.push({text:msg.text});
+                this.messages.push({text:msg.answer});
+              }
+              this.messages.push({text:this.question.text})
+              this.questiontype=this.question.questionAnswerType
+              if(this.question.buttons.length) this.buttons=this.question.buttons
+            }
+            else {this.messages.push({text:this.question.text}); this.questiontype=this.question.questionAnswerType}
+            if(this.question.buttons) this.buttons=this.question.buttons
+          });
+          this.signalr.on('GetNextQuestion',(question)=>{
+          this.question=question;
+          this.messages.push({text:this.question.nextQuestionText})
+          this.questionid=question.nextQuestionId
+          // this.questiontype=
+          });
         })
         .catch(err => console.error(err.toString()));
     },
     methods: {
       send() {
-        this.messages.push(this)
-        this.signalr.invoke('AnswerForTheQuestion',answer)
-        this.chat.push({ ...this.text });
-        this.text.message = "";
-        this.count = this.count + 1;
-        this.chat.push(this.questions[this.count]);
-        if (this.questions[this.count].disInput === false) {
-          this.disabled = false;
-        } else {
-          this.disabled = true;
-        }
+        // debugger;
+        this.messages.push({text:this.answer})
+        this.signalr.invoke('AnswerForTheQuestion',{sessionId:this.session, questionId:this.question.id, answer:this.answer})
+        
+        this.answer='';
+        this.count = this.count + 1;    
       }
     }
   };
@@ -111,6 +136,9 @@
     padding: 1rem;
     overflow-y: auto;
     grid-area: input;
+  }
+  .hidden {
+    display:none;
   }
 </style>
 
