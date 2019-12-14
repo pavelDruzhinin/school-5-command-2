@@ -53,6 +53,8 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
         questions:[],
         welcome:'',
         final:'',
+        welcome_id:null,
+        final_id:null,
         question:{
           text:'',
           buttons:[],
@@ -76,7 +78,14 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
     methods: {
       updatequestions(){
         this.$http.get("/questions/"+this.$route.params.id)
-        .then(response=>this.questions=response.data)
+        .then(response=>{this.questions=response.data;
+        this.welcome=this.questions[0].text;
+        this.welcome_id=this.questions[0].id;
+        this.final=this.questions[this.questions.length-1].text;
+        this.final_id=this.questions[this.questions.length-1].id;
+        this.questions.shift();
+        this.questions.pop();
+        })
         .catch(err=>console.log(err))
       },
       create(){
@@ -188,8 +197,10 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
         if(questionedit.buttons.length) {this.question.buttons=questionedit.buttons; this.question.type=true;} 
       },
       addtoDb(){
-        this.questions.push({text:this.final})
-        this.questions.unshift({text:this.welcome})
+        if(this.final_id==null) this.questions.push({text:this.final})
+          else this.questions.push({id:final_id, text:this.final})
+        if(this.welcome_id==null) this.questions.unshift({text:this.welcome})
+          else this.questions.unshift({id:welcome_id, text:this.welcome})
         this
         this.$http
           .post('/questions/'+this.$route.params.id,this.questions)
