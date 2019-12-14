@@ -8,9 +8,9 @@
       />
     </div>
     <div id="chat" v-else-if="questiontype==1">
-      <div v-for="(button,index) in buttons" :key="index">
-        <label class="btn btn-primary radio-inline active">
-        <input type="radio" class="hidden" v-model="answer" :value="button.text" buttons button-variant="radio-btn-outline"/>{{button.text}}
+      <div class="btn-group btn-group-toggle" data-toggle="buttons"> 
+        <label class="btn btn-primary" v-for="(button,index) in buttons" :key="index" :class="{ active: btnindex==index}" @click="btnindex=index">
+        <input type="radio" v-model="answer" :value="button.text" autocomplete="off" />{{button.text}}
         </label>
       </div>
       <b-button @click="send">Отправить</b-button>
@@ -50,7 +50,8 @@
         session:null,
         questiontype:null,
         buttons:null,
-        questionid:null
+        questionid:null,
+        btnindex:null
       };
     },
     created() {
