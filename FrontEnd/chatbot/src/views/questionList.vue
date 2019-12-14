@@ -70,6 +70,7 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
         editmode:null,
         index:null,
         deltext:null,
+        delindex:null
       };
     },
     created(){
@@ -97,12 +98,6 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
         this.question={
         text:'',
         buttons:[],
-        questiontype:[
-            {value:null, text:'Выберите тип'}, 
-            {value:'Welcome', text:'Приветствие'}, 
-            {value:'Normal', text:'Обычный вопрос'},
-            {value:'Final', text:'Завершающий диалог'}
-            ],
         type:false,
         selected:null,
         }
@@ -127,9 +122,10 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
         this.deltext=null;
       },
       deletequestion(index){
+        this.index=index;
+        this.$bvModal.show("deletemodal")
         if(this.questions[index].id) this.deltext=true
           else this.deltext=false
-        this.$bvModal.show("deletemodal")
       },
       deletefromchat(index){
         this.$http
@@ -142,11 +138,6 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
         this.questions.splice(index,1);
         this.index=null;
         this.deltext=null
-      },
-      deletequestion(index){
-        if(this.questions[index].id) this.deltext=true
-          else this.deltext=false
-        this.$bvModal.show("deletemodal")
       },
       addvariant(){
         this.question.buttons.push({text:''})
@@ -198,9 +189,9 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
       },
       addtoDb(){
         if(this.final_id==null) this.questions.push({text:this.final})
-          else this.questions.push({id:final_id, text:this.final})
-        if(this.welcome_id==null) this.questions.unshift({text:this.welcome})
-          else this.questions.unshift({id:welcome_id, text:this.welcome})
+          else this.questions.push({id:this.final_id, text:this.final})
+        if(this.welcome_id==null) this.questions.unshift({text:this.welcome, buttons:[{text:"Начать"}]})
+          else this.questions.unshift({id:this.welcome_id, text:this.welcome, buttons:[{text:"Начать"}]})
         this
         this.$http
           .post('/questions/'+this.$route.params.id,this.questions)

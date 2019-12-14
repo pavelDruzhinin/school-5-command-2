@@ -1,9 +1,6 @@
 <template>
   <div id="chat_wrap">
-    <div v-if="messages.length==1 && questiontype==0" id="chat">
-      <b-button @click="sendbutton(hello)">Здравствуйте</b-button>
-    </div>
-    <div id="chat" v-else-if="questiontype==0">
+    <div id="chat" v-if="questiontype==0">
       <textarea
         placeholder="Введите сообщение"
         @keydown.enter="send"
