@@ -22,8 +22,8 @@ namespace ChatsConstructor.WebApi.Models.Mapping
                 .ForMember(dest => dest.IsSessionCompleted, opt => opt.MapFrom(x => x.Status == SessionProgressType.Completed))
                 .ForMember(dest => dest.QuestionsHistory, opt => opt
                     .MapFrom(x => x.IsCompleted
-                        ? x.ChatSessionAnswers
-                        : x.ChatSessionAnswers.Except(new List<ChatSessionAnswer>() { x.ChatSessionAnswers.Last() })))
+                        ? x.ChatSessionAnswers.OrderBy(y => y.Question.QueueNumber)
+                        : x.ChatSessionAnswers.Except(new List<ChatSessionAnswer>() { x.ChatSessionAnswers.Last() }).OrderBy(y => y.Question.QueueNumber)))
                 .ForMember(dest => dest.NextQuestion, opt => opt.MapFrom(x => x.IsCompleted ? null : x.ChatSessionAnswers.Last()));
 
             CreateMap<ChatSessionAnswer, QuestionBaseDto>()
