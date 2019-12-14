@@ -183,6 +183,7 @@ namespace ChatsConstructor.WebApi.Hubs
                 SessionId = session.Id,
                 AnswerForPreviousQuestion = dto.Answer,
                 IsQuestionsEnded = nextQuestion == null,
+                QuestionAnswerType = nextQuestion.QuestionAnswerType,
                 Buttons = nextQuestion?.Buttons?.Select(x => new ButtonDto { Text = x.Text, ColorType = x.ColorType }).ToList()
             };
 

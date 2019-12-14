@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChatsConstructor.WebApi.Models.Domains.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,6 +33,14 @@ namespace ChatsConstructor.WebApi.Models.Hubs.Chat.Dto
         /// </summary>
         public string NextQuestionText { get; set; }
 
+        /// <summary>
+        /// Тип возможности ответа на вопрос
+        /// </summary>
+        public QuestionAnswerType QuestionAnswerType { get; set; }
+
+        /// <summary>
+        /// Кнопки
+        /// </summary>
         public List<ButtonDto> Buttons { get; set; }
 
         /// <summary>

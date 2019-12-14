@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ChatsConstructor.WebApi.Models.Domains;
+using ChatsConstructor.WebApi.Models.Domains.Enums;
 using ChatsConstructor.WebApi.Models.Hubs.Chat.Dto;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace ChatsConstructor.WebApi.Models.Mapping
         private void MapForSessionToHistory()
         {
             CreateMap<ChatSession, HistoryDto>()
-                .ForMember(dest => dest.IsSessionCompleted, opt => opt.MapFrom(x => x.IsCompleted))
+                .ForMember(dest => dest.IsSessionCompleted, opt => opt.MapFrom(x => x.Status == SessionProgressType.Completed))
                 .ForMember(dest => dest.QuestionsHistory, opt => opt
                     .MapFrom(x => x.IsCompleted
                         ? x.ChatSessionAnswers
@@ -29,7 +30,8 @@ namespace ChatsConstructor.WebApi.Models.Mapping
                 .ForMember(dest => dest.Text, opt => opt.MapFrom(x => x.Question.Text));
 
             CreateMap<ChatSessionAnswer, HistoryQuestionDto>()
-                .ForMember(dest => dest.Answer, opt => opt.MapFrom(x => x.Text));
+                .ForMember(dest => dest.Answer, opt => opt.MapFrom(x => x.Text))
+                .IncludeBase<ChatSessionAnswer, QuestionBaseDto>();
 
             CreateMap<ChatSessionAnswer, NextQuestionDto>()
                 .ForMember(dest => dest.Buttons, opt => opt.MapFrom(x => x.Question.Buttons))
