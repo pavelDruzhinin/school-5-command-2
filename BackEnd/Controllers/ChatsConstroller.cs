@@ -30,7 +30,7 @@ namespace Application.Web.Controllers
             _db = db;
         }
         /// <summary>
-        /// ��������� ������ �����
+        /// Получение списка чатов
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -39,8 +39,8 @@ namespace Application.Web.Controllers
         ///     
         /// </remarks>
         /// <returns></returns>
-        /// <response code='200'>���������� ������ �����</response>
-        /// <response code='401'>������������ �� �����������</response>
+        /// <response code='200'>Получение списка чатов</response>
+        /// <response code='401'>Пользователь не авторизован</response>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -54,9 +54,9 @@ namespace Application.Web.Controllers
         }
 
         /// <summary>
-        /// ��������� ������ ��� ������ �� ������ � ���
+        /// Получение сессии при заходе по ссылке в чат
         /// </summary>
-        /// <param name="chatId">������������� ����</param>
+        /// <param name="chatId">Идентификационный номер чата</param>
         /// <returns></returns>
         [HttpGet]
         [Route("GetSession/{chatId}")]
@@ -103,11 +103,12 @@ namespace Application.Web.Controllers
             return Json(new { SessionId = createdSession.Id });
         }
         /// <summary>
-        /// �������� ���� �������������
+        /// Создание нового чата
         /// </summary>
-        /// <param name="Model">���</param>
+        /// <param name="Model">Чат</param>
         /// <returns></returns>
-        /// <response code='200'>������ ����� ���</response>
+        /// <response code='200'>Чат успешно создан</response>
+        /// <reponse code='400'>Пользователь не авторизован</reponse>
         [HttpPost]
         [DefaultValue("Name")]
         [Produces(typeof(ChatDto))]
@@ -140,7 +141,12 @@ namespace Application.Web.Controllers
                 return BadRequest(ModelState);
             }
         }
-
+        /// <summary>
+        /// Проверка принадлежит ли выбранный чат пользователю
+        /// </summary>
+        /// <param name="chatId">Номер чата</param>
+        /// <returns></returns>
+        /// 
         [Route("isUserChat/{chatId}")]
         [HttpGet]
         public async Task<IActionResult> IsUserChat(long chatId)
@@ -157,7 +163,10 @@ namespace Application.Web.Controllers
             else return BadRequest("Возвращение в личный кабинет");
             return BadRequest("Что-то пошло не так");
         }
-
+        /// <summary>
+        /// Получение списка опрощеных
+        /// </summary>
+        /// <returns></returns>
         [Route("Respondents")]
         [HttpGet]
         public async Task<IActionResult> GetRespondents ()
