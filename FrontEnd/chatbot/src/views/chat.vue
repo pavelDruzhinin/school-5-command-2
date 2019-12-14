@@ -8,7 +8,7 @@
       />
     </div>
     <div id="chat" v-else-if="questiontype==1">
-      <div class="btn-group btn-group-toggle" data-toggle="buttons"> 
+      <div class="btn-group-toggle" data-toggle="buttons"> 
         <label class="btn btn-primary" v-for="(button,index) in buttons" :key="index" :class="{ active: btnindex==index}" @click="btnindex=index">
         <input type="radio" v-model="answer" :value="button.text" autocomplete="off" />{{button.text}}
         </label>
@@ -19,18 +19,6 @@
       <div class="wrap">
         <div class="mes" v-for="(message,index) in messages" :key="index">
           <p>{{message.text}}</p>
-          <!-- <ul v-show="chat.buttons" v-for="(variant, index) of chat.variants" :key="index">
-            <li>
-              <input
-                type="radio"
-                name="variant"
-                v-on:change="send"
-                :value="variant"
-                v-model="text.radio"
-              />
-              {{variant}}
-            </li>
-          </ul> -->
         </div>
       </div>
     </div>
@@ -88,6 +76,7 @@
           this.question=question;
           this.messages.push({text:this.question.nextQuestionText})
           this.questionid=question.nextQuestionId
+          if(question.buttons) this.buttons=question.buttons
           // this.questiontype=
           });
         })
@@ -95,12 +84,12 @@
     },
     methods: {
       send() {
-        // debugger;
         this.messages.push({text:this.answer})
         this.signalr.invoke('AnswerForTheQuestion',{sessionId:this.session, questionId:this.question.id, answer:this.answer})
-        
-        this.answer='';
-        this.count = this.count + 1;    
+        this.questiontype=null,
+        this.buttons=null;
+        this.btnindex=null
+        this.answer=null;
       }
     }
   };

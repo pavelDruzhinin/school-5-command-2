@@ -22,7 +22,7 @@
                   <b-button variant="outline-success mr-4" @click="edit(chat.id)">Редактировать</b-button>
                   <b-button variant="outline-danger mr-4" @click="removeId(chat.id)">Удалить</b-button>
                   <b-button variant="outline-primary mr-4" @click="share(chat.id)">Поделиться</b-button>
-                  <b-button variant="outline-dark" @click="share(chat.id)">Пройти чат</b-button>
+                  <b-button variant="outline-dark" @click="trychat(chat.id)">Пройти чат</b-button>
                 </div>
               </li>
             </ul>
@@ -37,8 +37,8 @@
             <ul class="user-view__card">
               <li
                 class="mb-4 chat-view__item"
-                v-for="respondent in respondents"
-                v-bind:key="respondent.userId"
+                v-for="(respondent,index) in respondents"
+                v-bind:key="index"
               >
                 {{ respondent.userName }}
                 <div class="user-view__inner mt-4">
@@ -88,6 +88,9 @@ export default {
     share(id){
       this.$bvModal.show("share");
       this.link="localhost:8080/chat/"+id
+    },
+    trychat(id){
+      this.$router.push('/chat/'+id)
     },
     removeId(id) {
       let chats = this.chats;
