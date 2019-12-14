@@ -81,8 +81,8 @@
             if(this.question.buttons) this.buttons=this.question.buttons
           });
           this.signalr.on('GetNextQuestion',(question)=>{
-            debugger;
           this.question=question;
+		  this.messages.push({text:question.answerForPreviousQuestion})
           this.messages.push({text:this.question.nextQuestionText})
           this.question.id=question.nextQuestionId
           if(question.buttons) this.buttons=question.buttons
@@ -91,7 +91,6 @@
     },
     methods: {
       send() {
-        this.messages.push({text:this.answer})
         this.signalr.invoke('AnswerForTheQuestion',{sessionId:this.session, questionId:this.question.id, answer:this.answer})
         this.questiontype=null,
         this.buttons=null;
