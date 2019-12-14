@@ -1,6 +1,9 @@
  <template>
   <div class="main">
     <div class="list">
+      <b-form-group label="Приветствие:" label-for="input-welcome">
+      <b-form-textarea id="input-welcome" v-model="welcome" />
+    </b-form-group>
       <b-button @click="create">Добавить ✚</b-button>
       <div v-if="questions.length">
       <p>Список вопросов:</p>
@@ -16,7 +19,10 @@
       @deletevariant="deletevariant" 
       @savequestion="editmode ? savechanges(index) : save()"
       :question="question" />
-      <b-button @click="addtoDb">Сохранить</b-button>
+      <b-form-group label="Завершение:" label-for="input-final">
+      <b-form-textarea id="input-final" v-model="final" />
+    </b-form-group>
+      <b-button @click="addtoDb" :disabled="(welcome!='' && final!='') ? false : true">Сохранить</b-button>
     </div>
     <b-modal @ok="deltext ? deletefromchat(index) : deletefromqueue(index)" id="deletemodal" title=Удаление>
       <p>Вы уверены что хотите удалить вопрос ?</p>
@@ -45,6 +51,8 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
     data() {
       return {
         questions:[],
+        welcome:'',
+        final:'',
         question:{
           text:'',
           buttons:[],
@@ -180,6 +188,9 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
         if(questionedit.buttons.length) {this.question.buttons=questionedit.buttons; this.question.type=true;} 
       },
       addtoDb(){
+        this.questions.push({text:this.final})
+        this.questions.unshift({text:this.welcome})
+        this
         this.$http
           .post('/questions/'+this.$route.params.id,this.questions)
           .then(this.$router.push('/dashboard'))
