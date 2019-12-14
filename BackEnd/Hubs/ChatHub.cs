@@ -186,7 +186,7 @@ namespace ChatsConstructor.WebApi.Hubs
                 AnswerForPreviousQuestion = dto.Answer,
                 IsQuestionsEnded = nextQuestion == null,
                 QuestionAnswerType = nextQuestion?.QuestionAnswerType,
-                Buttons = nextQuestion?.Buttons?.Select(x => new ButtonDto { Text = x.Text, ColorType = x.ColorType }).ToList()
+                Buttons = nextQuestion?.Buttons?.Select(x => new ButtonDto { Text = x.Text, ColorType = x.ColorType })?.ToList()
             };
 
             // Сериализуем в JSON
