@@ -1,8 +1,7 @@
 <template>
   <div id="chat_wrap">
-    <div v-if="end" id="chat">
-      <b-button @click="$router.go()">Пройти заново</b-button>
-      <b-button @click="$router.push('/')">Выйти</b-button>
+    <div v-if="messages.length==1 && questiontype==0" id="chat">
+      <b-button @click="sendbutton(hello)">Здравствуйте</b-button>
     </div>
     <div id="chat" v-else-if="questiontype==0">
       <textarea
@@ -14,10 +13,11 @@
     <div id="chat" v-else-if="questiontype==1">
       <div class="btn-group-toggle" data-toggle="buttons"> 
         <label class="btn btn-primary" v-for="(button,index) in buttons" :key="index" :class="{ active: btnindex==index}" @click="btnindex=index">
-        <input type="radio" v-model="answer" :value="button.text" autocomplete="off" />{{button.text}}
+        <input type="radio" @click="sendbutton(button.text)" autocomplete="off" />{{button.text}}
         </label>
-      </div>
-      <b-button @click="send">Отправить</b-button>
+    <div v-else-if="end" id="chat">
+      <b-button @click="$router.go()">Пройти заново</b-button>
+      <b-button @click="$router.push('/')">Выйти</b-button>
     </div>
     <div id="chat-form">
       <div class="wrap">
@@ -38,6 +38,8 @@
         question:null,
         messages:[],
         history:null,
+        hello:'Здравствуйте',
+        bye:'',
         answer:null,
         session:null,
         questiontype:null,
@@ -100,6 +102,13 @@
     methods: {
       send() {
         this.signalr.invoke('AnswerForTheQuestion',{sessionId:this.session, questionId:this.question.id, answer:this.answer})
+        this.questiontype=null,
+        this.buttons=null;
+        this.btnindex=null
+        this.answer=null;
+      },
+      sendbutton(answer) {
+        this.signalr.invoke('AnswerForTheQuestion',{sessionId:this.session, questionId:this.question.id, answer:answer})
         this.questiontype=null,
         this.buttons=null;
         this.btnindex=null
