@@ -22,7 +22,7 @@
       <b-form-group label="Завершение:" label-for="input-final">
       <b-form-textarea id="input-final" v-model="final" />
     </b-form-group>
-      <b-button @click="addtoDb" :disabled="(welcome!='' && final!='') ? false : true">Сохранить</b-button>
+      <b-button @click="addtoDb" :disabled="(welcome!='' && final!='' && questions.length>0) ? false : true">Сохранить</b-button>
     </div>
     <b-modal @ok="deltext ? deletefromchat(index) : deletefromqueue(index)" id="deletemodal" title=Удаление>
       <p>Вы уверены что хотите удалить вопрос ?</p>
