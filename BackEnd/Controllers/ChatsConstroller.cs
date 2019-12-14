@@ -193,7 +193,7 @@ namespace Application.Web.Controllers
                         ChatId = rl.ChatId,
                         ChatName = rl.ChatName,
                         UserId = rl.UserId,
-                        UserName = u.LastName + " " + u.LastName + " " + u.MiddleName
+                        UserName = u.FirstName + " " + u.LastName + " " + u.MiddleName
                     }
                 )
                 .ToList();
