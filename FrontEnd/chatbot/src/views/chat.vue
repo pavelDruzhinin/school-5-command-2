@@ -45,16 +45,24 @@
     created() {
       this.$http
         .get("/chats/getsession/" + this.$route.params.id)
-        .then(response => (this.session = response.data.sessionId));
+        .then(response => 
+		{
+			(this.session = response.data.sessionId)
+
+			this.signalr
+			.start()
+			.then(()=>{
+			this.signalr.invoke('EnterToSession',this.session);
+			
+			})
+			.catch(err => console.error(err.toString()));
+		});
       this.signalr = new HubConnectionBuilder()
         .withUrl("/chat",HttpTransportType.LongPolling|HttpTransportType.ServerSentEvents|HttpTransportType.ForeverFrame)
         .configureLogging(LogLevel.Information)
         .build();
-      this.signalr
-        .start()
-        .then(()=>{
-          this.signalr.invoke('EnterToSession',this.session);
-          this.signalr.on('EnterToSession',(message)=>{
+
+		this.signalr.on('EnterToSession',(message)=>{
             this.history=message
             this.question=this.history.nextQuestion
             if(this.history.questionsHistory.length) 
@@ -80,8 +88,6 @@
           if(question.buttons) this.buttons=question.buttons
           this.questiontype=this.question.questionAnswerType
           });
-        })
-        .catch(err => console.error(err.toString()));
     },
     methods: {
       send() {
