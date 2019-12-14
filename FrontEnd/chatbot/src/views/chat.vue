@@ -26,7 +26,7 @@
 </template>
 
 <script>
-  import { LogLevel, HubConnectionBuilder } from "@aspnet/signalr";
+  import { LogLevel, HubConnectionBuilder, HttpTransportType } from "@aspnet/signalr";
   export default {
     data() {
       return {
@@ -47,7 +47,7 @@
         .get("/chats/getsession/" + this.$route.params.id)
         .then(response => (this.session = response.data.sessionId));
       this.signalr = new HubConnectionBuilder()
-        .withUrl("/chat")
+        .withUrl("/chat",HttpTransportType.LongPolling|HttpTransportType.ServerSentEvents|HttpTransportType.ForeverFrame)
         .configureLogging(LogLevel.Information)
         .build();
       this.signalr
@@ -73,11 +73,12 @@
             if(this.question.buttons) this.buttons=this.question.buttons
           });
           this.signalr.on('GetNextQuestion',(question)=>{
+            debugger;
           this.question=question;
           this.messages.push({text:this.question.nextQuestionText})
-          this.questionid=question.nextQuestionId
+          this.questionid=question.Id
           if(question.buttons) this.buttons=question.buttons
-          // this.questiontype=
+          this.questiontype=this.question.questionAnswerType
           });
         })
         .catch(err => console.error(err.toString()));
