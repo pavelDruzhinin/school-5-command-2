@@ -34,6 +34,7 @@ namespace ChatsConstructor.WebApi.Models.Mapping
                 .IncludeBase<ChatSessionAnswer, QuestionBaseDto>();
 
             CreateMap<ChatSessionAnswer, NextQuestionDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(x => x.QuestionId))
                 .ForMember(dest => dest.Buttons, opt => opt.MapFrom(x => x.Question.Buttons))
                 .ForMember(dest => dest.QuestionAnswerType, opt => opt.MapFrom(x => x.Question.QuestionAnswerType))
                 .IncludeBase<ChatSessionAnswer, QuestionBaseDto>();
