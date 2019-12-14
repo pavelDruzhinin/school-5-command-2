@@ -36,7 +36,7 @@ namespace ChatsConstructor.WebApi.Models.Hubs.Chat.Dto
         /// <summary>
         /// Тип возможности ответа на вопрос
         /// </summary>
-        public QuestionAnswerType QuestionAnswerType { get; set; }
+        public QuestionAnswerType? QuestionAnswerType { get; set; }
 
         /// <summary>
         /// Кнопки

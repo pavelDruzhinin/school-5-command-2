@@ -166,11 +166,13 @@ namespace ChatsConstructor.WebApi.Hubs
             var nextQuestion = GetNextQuestion(session.ChatId, dto.QuestionId);
 
             // Делаем запрос на добавление вопроса в историю
-            _db.ChatSessionAnswers.Add(new ChatSessionAnswer()
-            {
-                SessionId = session.Id,
-                QuestionId = nextQuestion.Id,
-            });
+            
+            if(nextQuestion != null)
+                _db.ChatSessionAnswers.Add(new ChatSessionAnswer()
+                {
+                    SessionId = session.Id,
+                    QuestionId = nextQuestion.Id,
+                });
 
             // Выполняем все запросы указанные выше
             _db.SaveChanges();
@@ -183,7 +185,7 @@ namespace ChatsConstructor.WebApi.Hubs
                 SessionId = session.Id,
                 AnswerForPreviousQuestion = dto.Answer,
                 IsQuestionsEnded = nextQuestion == null,
-                QuestionAnswerType = nextQuestion.QuestionAnswerType,
+                QuestionAnswerType = nextQuestion?.QuestionAnswerType,
                 Buttons = nextQuestion?.Buttons?.Select(x => new ButtonDto { Text = x.Text, ColorType = x.ColorType }).ToList()
             };
 
