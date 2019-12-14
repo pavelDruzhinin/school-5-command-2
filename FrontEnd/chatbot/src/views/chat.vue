@@ -1,6 +1,10 @@
 <template>
   <div id="chat_wrap">
-    <div id="chat" v-if="questiontype==0">
+    <div v-if="end" id="chat">
+      <b-button @click="$router.go()">Пройти заново</b-button>
+      <b-button @click="$router.push('/')">Выйти</b-button>
+    </div>
+    <div id="chat" v-else-if="questiontype==0">
       <textarea
         placeholder="Введите сообщение"
         @keydown.enter="send"
@@ -39,7 +43,8 @@
         questiontype:null,
         buttons:null,
         questionid:null,
-        btnindex:null
+        btnindex:null,
+        end:false,
       };
     },
     created() {
@@ -79,14 +84,17 @@
             }
             else {this.messages.push({text:this.question.text}); this.questiontype=this.question.questionAnswerType}
             if(this.question.buttons) this.buttons=this.question.buttons
+            if(this.question.isQuestionsEnded) this.end=this.question.isQuestionsEnded
           });
           this.signalr.on('GetNextQuestion',(question)=>{
           this.question=question;
-		  this.messages.push({text:question.answerForPreviousQuestion})
-          this.messages.push({text:this.question.nextQuestionText})
+          if(!this.end){
+		      this.messages.push({text:question.answerForPreviousQuestion})
+          this.messages.push({text:this.question.nextQuestionText})}
           this.question.id=question.nextQuestionId
           if(question.buttons) this.buttons=question.buttons
           this.questiontype=this.question.questionAnswerType
+          if(this.question.isQuestionsEnded) this.end=this.question.isQuestionsEnded
           });
     },
     methods: {
