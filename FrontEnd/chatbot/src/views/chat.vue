@@ -15,6 +15,8 @@
         <label class="btn btn-primary" v-for="(button,index) in buttons" :key="index" :class="{ active: btnindex==index}" @click="btnindex=index">
         <input type="radio" @click="sendbutton(button.text)" autocomplete="off" />{{button.text}}
         </label>
+      </div>
+    </div>
     <div v-else-if="end" id="chat">
       <b-button @click="$router.go()">Пройти заново</b-button>
       <b-button @click="$router.push('/')">Выйти</b-button>
