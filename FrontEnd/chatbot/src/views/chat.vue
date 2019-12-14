@@ -84,7 +84,7 @@
             debugger;
           this.question=question;
           this.messages.push({text:this.question.nextQuestionText})
-          this.questionid=question.Id
+          this.question.id=question.nextQuestionId
           if(question.buttons) this.buttons=question.buttons
           this.questiontype=this.question.questionAnswerType
           });
