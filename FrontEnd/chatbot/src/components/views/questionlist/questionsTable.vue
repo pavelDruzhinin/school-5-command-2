@@ -4,8 +4,8 @@
           <div class="questionBlock">
             {{question.text}}
             <div class="btPanel">
-              <button class="myBtn btnLittleNarrow" @click="edit(index)">Редактировать ✎</button>
-              <button class="myBtn btnLittleDelete" @click="del(index)">Удалить &times;</button>
+              <b-button size="sm" @click="edit(index)">Редактировать ✎</b-button>
+              <b-button size="sm" @click="del(index)">Удалить &times;</b-button>
             </div>
           </div>
 

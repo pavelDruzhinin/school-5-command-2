@@ -188,10 +188,10 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
         if(questionedit.buttons.length) {this.question.buttons=questionedit.buttons; this.question.type=true;} 
       },
       addtoDb(){
-        if(this.final_id==null) this.questions.push({text:this.final})
+        if(this.final_id==null) this.questions.push({text:this.final, buttons:[{text:"Закончить"}]})
           else this.questions.push({id:this.final_id, text:this.final})
         if(this.welcome_id==null) this.questions.unshift({text:this.welcome, buttons:[{text:"Начать"}]})
-          else this.questions.unshift({id:this.welcome_id, text:this.welcome, buttons:[{text:"Начать"}]})
+          else this.questions.unshift({id:this.welcome_id, text:this.welcome })
         this
         this.$http
           .post('/questions/'+this.$route.params.id,this.questions)

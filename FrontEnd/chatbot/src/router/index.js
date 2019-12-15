@@ -37,7 +37,8 @@ const routes = [
     components: {
       default: () => import('../views/chat.vue'),
       navbar: () => import('../components/Navbar.vue')
-    }
+    },
+    beforeEnter:ifNotAuth
   },
   {
     path: '/edit/:id',
