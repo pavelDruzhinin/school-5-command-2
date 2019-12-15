@@ -69,28 +69,28 @@ export default {
       chats: [],
       chat: { Name: "" },
       respondents: [],
-      link:null
+      link: null
     };
   },
-  created(){
-      this.getchats();
-      this.getrespondents()
-    },
+  created() {
+    this.getchats();
+    this.getrespondents();
+  },
   methods: {
-    getchats(){
-      this.$http.get('/chats/')
-      .then(response=>this.chats=response.data)
+    getchats() {
+      this.$http.get("/chats/").then(response => (this.chats = response.data));
     },
-    getrespondents(){
-      this.$http.get('/chats/respondents')
-      .then(response=>this.respondents=response.data)
+    getrespondents() {
+      this.$http
+        .get("/chats/respondents")
+        .then(response => (this.respondents = response.data));
     },
-    share(id){
+    share(id) {
       this.$bvModal.show("share");
-      this.link="localhost:8080/chat/"+id
+      this.link = "localhost:8080/chat/" + id;
     },
-    trychat(id){
-      this.$router.push('/chat/'+id)
+    trychat(id) {
+      this.$router.push("/chat/" + id);
     },
     removeId(id) {
       let chats = this.chats;
@@ -99,8 +99,8 @@ export default {
     openmodal() {
       this.$bvModal.show("modal1");
     },
-    edit(id){
-      this.$router.push('/edit/'+id)
+    edit(id) {
+      this.$router.push("/edit/" + id);
     },
     addchat() {
       this.$http.post("/chats/add", this.chat).then(response => {
