@@ -67,6 +67,8 @@ export default {
       final: "",
       welcome_id: null,
       final_id: null,
+      welcomebtn_id:null,
+      finalbtn_id:null,
       question: {
         text: "",
         buttons: [],
@@ -94,14 +96,23 @@ export default {
         .get("/questions/" + this.$route.params.id)
         .then(response => {
           this.questions = response.data;
+          for(let i=0;i<this.questions.length;i++)
+          {
+            if(this.questions[i].buttons.length==0){
+              this.questions.splice(i,1,{ text: this.questions[i].text, id: this.questions[i].id });
+              }
+          }
           this.welcome = this.questions[0].text;
+          this.welcomebtn_id = this.questions[0].buttons[0].id
           this.welcome_id = this.questions[0].id;
-          this.final = this.questions[this.questions.length - 1].text;
+          this.final = this.questions[this.questions.length-1].text;
+          this.finalbtn_id=this.questions[this.questions.length - 1].buttons[0].id;
           this.final_id = this.questions[this.questions.length - 1].id;
           this.questions.shift();
           this.questions.pop();
         })
         .catch(err => console.log(err));
+        
     },
     create() {
       this.editmode = false;
@@ -211,15 +222,15 @@ export default {
       if (this.final_id == null)
         this.questions.push({
           text: this.final,
-          buttons: [{ text: "Закончить" }]
+          buttons: [{ text: "Закончить", id: this.finalbtn_id }]
         });
-      else this.questions.push({ id: this.final_id, text: this.final });
+      else this.questions.push({ id: this.final_id, text: this.final, buttons: [{ text: "Закончить", id: this.finalbtn_id}] });
       if (this.welcome_id == null)
         this.questions.unshift({
           text: this.welcome,
           buttons: [{ text: "Начать" }]
         });
-      else this.questions.unshift({ id: this.welcome_id, text: this.welcome });
+      else this.questions.unshift({ id: this.welcome_id, text: this.welcome, buttons: [{ text: "Начать", id: this.welcomebtn_id }] });
       this;
       this.$http
         .post("/questions/" + this.$route.params.id, this.questions)
