@@ -94,18 +94,6 @@ export default {
         .get("/questions/" + this.$route.params.id)
         .then(response => {
           this.questions = response.data;
-          for(let i=0; i<this.questions.length; i++){
-            if(this.questions[i].buttons.length) 
-            this.questions.splice(i, 1, {
-              text: this.questions[i].text,
-              buttons: this.questions[i].buttons,
-              id:this.questions[i].id,
-              });
-            else this.questions[i].splice(i, 1, {
-            text: this.questions[i].text,
-            id:this.question[i].id,
-        });
-          }
           this.welcome = this.questions[0].text;
           this.welcome_id = this.questions[0].id;
           this.final = this.questions[this.questions.length - 1].text;
