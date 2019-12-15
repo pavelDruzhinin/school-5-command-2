@@ -84,8 +84,8 @@ import questionstable from '@/components/views/questionlist/questionsTable.vue'
         this.welcome_id=this.questions[0].id;
         this.final=this.questions[this.questions.length-1].text;
         this.final_id=this.questions[this.questions.length-1].id;
-        this.questions.shift();
-        this.questions.pop();
+        // this.questions.shift();
+        // this.questions.pop();
         })
         .catch(err=>console.log(err))
       },
