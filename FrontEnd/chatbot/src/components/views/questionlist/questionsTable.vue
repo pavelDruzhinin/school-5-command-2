@@ -25,11 +25,7 @@
 </template>
 
 <script>
-import draggable from "vuedraggable";
 export default {
-  components: {
-    draggable
-  },
   props: ["questions"],
   methods: {
     edit(index) {

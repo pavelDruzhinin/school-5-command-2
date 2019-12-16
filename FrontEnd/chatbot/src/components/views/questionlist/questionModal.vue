@@ -9,24 +9,18 @@
     <b-form-group v-if="question.type" label="Варианты ответов:" label-for="variants">
       <b-button @click="addvariant()" variant="primary">Добавить</b-button>
       <b-list-group id="variants">
-        <draggable v-model="question.buttons">
-          <b-list-group-item class="answer" v-for="(button,index) in question.buttons" :key="index">
-            <b-form-textarea v-model="button.text" />
-            <b-button class="mt-3" @click="deletevariant(index)" variant="danger">Удалить</b-button>
-          </b-list-group-item>
-        </draggable>
+        <b-list-group-item class="answer" v-for="(button,index) in question.buttons" :key="index">
+          <b-form-textarea v-model="button.text" />
+          <b-button class="mt-3" @click="deletevariant(index)" variant="danger">Удалить</b-button>
+        </b-list-group-item>
       </b-list-group>
     </b-form-group>
   </b-modal>
 </template>
 
 <script>
-import draggable from "vuedraggable";
 export default {
   props: ["question"],
-  components: {
-    draggable
-  },
   methods: {
     addvariant() {
       return this.$emit("addvariant");

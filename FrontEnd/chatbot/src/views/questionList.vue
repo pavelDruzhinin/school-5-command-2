@@ -72,14 +72,7 @@ export default {
       question: {
         text: "",
         buttons: [],
-        questiontype: [
-          { value: null, text: "Выберите тип" },
-          { value: "Welcome", text: "Приветствие" },
-          { value: "Normal", text: "Обычный вопрос" },
-          { value: "Final", text: "Завершающий диалог" }
-        ],
         type: false,
-        selected: null
       },
       editmode: null,
       index: null,
@@ -124,7 +117,6 @@ export default {
         text: "",
         buttons: [],
         type: false,
-        selected: null
       };
       this.index = null;
       this.editmode = null;
